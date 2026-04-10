@@ -3,9 +3,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
-import { query } from './db.js';
-import { signToken, requireAuth, requireRole } from './auth.js';
-import { ensureAnonCookie, getClientIp, slugifyCode } from './utils.js';
+import { query } from '../db.js';
+import { signToken, requireAuth, requireRole } from '../auth.js';
+import { ensureAnonCookie, getClientIp, slugifyCode } from '../utils.js';
 
 dotenv.config();
 
