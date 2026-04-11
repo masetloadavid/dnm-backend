@@ -1,4 +1,3 @@
-import { pool } from '../db.js';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -7,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { query } from '../db.js';
 import { signToken, requireAuth, requireRole } from '../auth.js';
 import { ensureAnonCookie, getClientIp, slugifyCode } from '../utils.js';
-
+import { pool } from '../db.js';
 dotenv.config();
 
 const app = express();
