@@ -559,7 +559,23 @@ app.get('/api/public/referral/:referralId', async (req, res) => {
   if (!result.rows.length) return res.status(404).json({ error: 'Referral not found' });
   res.json(result.rows[0]);
 });
+app.get("/test-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM referrals");
 
+    res.json({
+      ok: true,
+      data: result.rows,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      error: error.message,
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
