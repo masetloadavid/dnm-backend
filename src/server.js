@@ -538,22 +538,7 @@ app.post('/api/practitioner/confirm', requireAuth, requireRole('practitioner'), 
     res.status(500).json({ error: 'Confirmation failed' });
   }
 });
-app.get("/test-db", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM referrals ORDER BY id DESC LIMIT 5");
-    res.json({
-      ok: true,
-      count: result.rows.length,
-      referrals: result.rows,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      ok: false,
-      error: error.message,
-    });
-  }
-});
+
 app.get('/api/public/referral/:referralId', async (req, res) => {
   const result = await query('SELECT id, status, patient_first_name, patient_last_name FROM referrals WHERE id = $1', [req.params.referralId]);
   if (!result.rows.length) return res.status(404).json({ error: 'Referral not found' });
@@ -561,18 +546,18 @@ app.get('/api/public/referral/:referralId', async (req, res) => {
 });
 app.get("/test-db", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM referrals");
+    const result = await query("SELECT * FROM referrals ORDER BY id DESC LIMIT 5");
 
     res.json({
       ok: true,
-      data: result.rows,
+      count: result.rows.length,
+      referrals: result.rows,
     });
-
   } catch (error) {
-    console.error(error);
+    console.error("TEST-DB ERROR:", error);
     res.status(500).json({
       ok: false,
-      error: error.message,
+      error: error?.message || String(error),
     });
   }
 });
