@@ -561,6 +561,29 @@ app.get("/test-db", async (req, res) => {
     });
   }
 });
+app.post("/api/practitioners", async (req, res) => {
+  try {
+    const { name, specialty, location } = req.body;
+
+    const result = await query(
+      `INSERT INTO practitioners (name, specialty, location)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [name, specialty, location]
+    );
+
+    res.json({
+      ok: true,
+      practitioner: result.rows[0],
+    });
+  } catch (error) {
+    console.error("CREATE PRACTITIONER ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
