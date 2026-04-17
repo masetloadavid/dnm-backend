@@ -584,6 +584,81 @@ app.post("/api/practitioners", async (req, res) => {
     });
   }
 });
+app.post("/api/affiliates", async (req, res) => {
+  try {
+    const { user_id, referral_code, total_earnings = 0 } = req.body;
+
+    const result = await query(
+      `INSERT INTO affiliates (user_id, referral_code, total_earnings)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [user_id, referral_code, total_earnings]
+    );
+
+    res.json({
+      ok: true,
+      affiliate: result.rows[0],
+    });
+  } catch (error) {
+    console.error("CREATE AFFILIATE ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.post("/api/bookings", async (req, res) => {
+  try {
+    const { user_id, practitioner_id, appointment_date, status = "pending" } = req.body;
+
+    const result = await query(
+      `INSERT INTO bookings (user_id, practitioner_id, appointment_date, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [user_id, practitioner_id, appointment_date, status]
+    );
+
+    res.json({
+      ok: true,
+      booking: result.rows[0],
+    });
+  } catch (error) {
+    console.error("CREATE BOOKING ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.post("/api/referrals", async (req, res) => {
+  try {
+    const {
+      affiliate_id,
+      user_id,
+      booking_id,
+      commission = 25,
+      status = "pending",
+    } = req.body;
+
+    const result = await query(
+      `INSERT INTO referrals (affiliate_id, user_id, booking_id, commission, status)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [affiliate_id, user_id, booking_id, commission, status]
+    );
+
+    res.json({
+      ok: true,
+      referral: result.rows[0],
+    });
+  } catch (error) {
+    console.error("CREATE REFERRAL ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
