@@ -659,6 +659,82 @@ app.post("/api/referrals", async (req, res) => {
     });
   }
 });
+app.get("/api/affiliates", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM affiliates ORDER BY id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      affiliates: result.rows,
+    });
+  } catch (error) {
+    console.error("GET AFFILIATES ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.get("/api/bookings", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM bookings ORDER BY id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      bookings: result.rows,
+    });
+  } catch (error) {
+    console.error("GET BOOKINGS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.get("/api/referrals", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM referrals ORDER BY id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      referrals: result.rows,
+    });
+  } catch (error) {
+    console.error("GET REFERRALS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.get("/api/practitioners", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM practitioners ORDER BY id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      practitioners: result.rows,
+    });
+  } catch (error) {
+    console.error("GET PRACTITIONERS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
