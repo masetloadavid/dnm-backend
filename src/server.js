@@ -776,7 +776,12 @@ app.get("/r/:code", async (req, res) => {
     );
 
     // 3. Redirect visitor to your website / booking page
-    return res.redirect("https://www.doktornearme.co.za");
+    res.json({
+  ok: true,
+  message: "Referral tracked successfully",
+  affiliate,
+  referral: referralResult.rows[0]
+});
   } catch (error) {
     console.error("REFERRAL LINK ERROR:", error);
     return res.status(500).json({
