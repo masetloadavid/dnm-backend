@@ -699,9 +699,20 @@ app.get("/api/bookings", async (req, res) => {
 });
 app.get("/api/referrals", async (req, res) => {
   try {
-    const result = await query(
-      `SELECT * FROM referrals ORDER BY id DESC`
-    );
+    const { affiliate_id } = req.query;
+
+    let result;
+
+    if (affiliate_id) {
+      result = await query(
+        `SELECT * FROM referrals WHERE affiliate_id = $1 ORDER BY id DESC`,
+        [affiliate_id]
+      );
+    } else {
+      result = await query(
+        `SELECT * FROM referrals ORDER BY id DESC`
+      );
+    }
 
     res.json({
       ok: true,
