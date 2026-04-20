@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DNM Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #0f172a;
+      color: white;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Doktor Near Me Dashboard</h1>
+
+<div class="card">
+  <h2>Total Referrals: <span id="total">0</span></h2>
+</div>
+
+<div class="card">
+  <h2>Pending Referrals: <span id="pending">0</span></h2>
+</div>
+
+<div class="card">
+  <h2>Total Earnings: R <span id="earnings">0</span></h2>
+</div>
+
+<div class="card">
+  <h2>Referrals</h2>
+  <button onclick="loadReferrals()">Load Referrals</button>
+  <pre id="referrals"></pre>
+</div>
+
+<script>
+const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+// Load dashboard stats
+async function loadDashboard() {
+  const res = await fetch(BASE_URL + "/api/dashboard");
+  const data = await res.json();
+
+  document.getElementById("total").innerText = data.total_referrals;
+  document.getElementById("pending").innerText = data.pending_referrals;
+  document.getElementById("earnings").innerText = data.total_earnings;
+}
+
+// Load referrals list
+async function loadReferrals() {
+  const res = await fetch(BASE_URL + "/api/referrals");
+  const data = await res.json();
+
+  document.getElementById("referrals").innerText =
+    JSON.stringify(data.referrals, null, 2);
+}
+
+// Auto load dashboard on open
+loadDashboard();
+</script>
+
+</body>
+</html>
