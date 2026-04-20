@@ -178,44 +178,6 @@ app.get('/t/impression/:slug', async (req, res) => {
   }
 });
 
-app.get('/r/:slug', async (req, res) => {
-  try {
-    const visitorId = await getOrCreateVisitor(req, res);
-    const result = await query(
-      `SELECT id, affiliate_id, practitioner_id, destination_url
-       FROM tracking_links WHERE slug = $1 AND active = true LIMIT 1`,
-      [req.params.slug]
-    );
-
-    if (!result.rows.length) return res.status(404).send('Invalid link');
-    const link = result.rows[0];
-
-    await logEvent({
-      trackingLinkId: link.id,
-      visitorId,
-      eventName: 'click',
-      meta: { referrer: req.headers.referer || null, query: req.query }
-    });
-
-    const referral = await query(
-      `INSERT INTO referrals (
-        tracking_link_id, affiliate_id, practitioner_id, visitor_id, status,
-        practitioner_fee_zar, affiliate_commission_zar
-      )
-      VALUES ($1, $2, $3, $4, 'clicked', $5, $6)
-      RETURNING id`,
-      [link.id, link.affiliate_id, link.practitioner_id, visitorId, PRACTITIONER_FEE, AFFILIATE_COMMISSION]
-    );
-
-    const redirectUrl = new URL(link.destination_url);
-    redirectUrl.searchParams.set('referral_id', referral.rows[0].id);
-    res.redirect(redirectUrl.toString());
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Redirect failed');
-  }
-});
-
 app.post('/api/public/lead', async (req, res) => {
   try {
     const { referral_id, patient_first_name, patient_last_name, patient_phone, patient_email, notes } = req.body;
@@ -607,6 +569,7 @@ app.post("/api/affiliates", async (req, res) => {
     });
   }
 });
+
 app.post("/api/bookings", async (req, res) => {
   try {
     const { user_id, practitioner_id, appointment_date, status = "pending" } = req.body;
@@ -630,6 +593,7 @@ app.post("/api/bookings", async (req, res) => {
     });
   }
 });
+
 app.post("/api/referrals", async (req, res) => {
   try {
     const {
@@ -659,6 +623,7 @@ app.post("/api/referrals", async (req, res) => {
     });
   }
 });
+
 app.get("/api/affiliates", async (req, res) => {
   try {
     const result = await query(
@@ -678,6 +643,7 @@ app.get("/api/affiliates", async (req, res) => {
     });
   }
 });
+
 app.get("/api/bookings", async (req, res) => {
   try {
     const result = await query(
@@ -697,6 +663,7 @@ app.get("/api/bookings", async (req, res) => {
     });
   }
 });
+
 app.get("/api/referrals", async (req, res) => {
   try {
     const { affiliate_id } = req.query;
@@ -727,6 +694,7 @@ app.get("/api/referrals", async (req, res) => {
     });
   }
 });
+
 app.get("/api/practitioners", async (req, res) => {
   try {
     const result = await query(
@@ -746,6 +714,7 @@ app.get("/api/practitioners", async (req, res) => {
     });
   }
 });
+
 app.get("/r/:code", async (req, res) => {
   try {
     const { code } = req.params;
@@ -790,6 +759,7 @@ app.get("/r/:code", async (req, res) => {
     });
   }
 });
+
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
