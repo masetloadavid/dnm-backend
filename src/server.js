@@ -746,6 +746,45 @@ app.get("/api/practitioners", async (req, res) => {
     });
   }
 });
+app.get("/r/:code", async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    // 1. Find affiliate by referral code
+    const affiliateResult = await query(
+      `SELECT * FROM affiliates WHERE referral_code = $1 LIMIT 1`,
+      [code]
+    );
+
+    if (!affiliateResult.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Invalid referral code",
+      });
+    }
+
+    const affiliate = affiliateResult.rows[0];
+
+    // 2. Create a referral record
+    // We are using user_id = 1 and booking_id = 1 as placeholders for now
+    // Later this will come from the real booking flow
+    const referralResult = await query(
+      `INSERT INTO referrals (affiliate_id, user_id, booking_id, commission, status)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [affiliate.id, 1, 1, 25, "pending"]
+    );
+
+    // 3. Redirect visitor to your website / booking page
+    return res.redirect("https://doktornearme.co.za");
+  } catch (error) {
+    console.error("REFERRAL LINK ERROR:", error);
+    return res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
