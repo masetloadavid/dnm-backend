@@ -811,6 +811,82 @@ app.post("/api/leads", async (req, res) => {
     });
   }
 });
+app.get("/api/leads", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM leads ORDER BY id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      leads: result.rows,
+    });
+  } catch (error) {
+    console.error("GET LEADS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.get("/api/leads/:id", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM leads WHERE id = $1`,
+      [req.params.id]
+    );
+
+    if (!result.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Lead not found",
+      });
+    }
+
+    res.json({
+      ok: true,
+      lead: result.rows[0],
+    });
+  } catch (error) {
+    console.error("GET ONE LEAD ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.put("/api/leads/:id/status", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const result = await query(
+      `UPDATE leads
+       SET status = $1
+       WHERE id = $2
+       RETURNING *`,
+      [status, req.params.id]
+    );
+
+    if (!result.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Lead not found",
+      });
+    }
+
+    res.json({
+      ok: true,
+      lead: result.rows[0],
+    });
+  } catch (error) {
+    console.error("UPDATE LEAD STATUS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
