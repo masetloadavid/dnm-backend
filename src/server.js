@@ -891,7 +891,6 @@ app.get("/api/affiliate/:code/leads", async (req, res) => {
   try {
     const { code } = req.params;
 
-    // 1. Find affiliate
     const affiliateResult = await query(
       `SELECT * FROM affiliates WHERE referral_code = $1 LIMIT 1`,
       [code]
@@ -906,16 +905,19 @@ app.get("/api/affiliate/:code/leads", async (req, res) => {
 
     const affiliate = affiliateResult.rows[0];
 
-    // 2. Get leads for this affiliate
     const leadsResult = await query(
       `SELECT * FROM leads WHERE affiliate_id = $1 ORDER BY id DESC`,
       [affiliate.id]
     );
 
+    const totalLeads = leadsResult.rows.length;
+    const earnings = totalLeads * 25;
+
     res.json({
       ok: true,
       affiliate,
-      count: leadsResult.rows.length,
+      total_leads: totalLeads,
+      total_earnings: earnings,
       leads: leadsResult.rows,
     });
 
