@@ -47,7 +47,11 @@
 <div class="card">
   <h2>Total Leads: <span id="totalLeads">0</span></h2>
 </div>
-
+  
+<div class="card">
+  <h2>Booked/Paid Leads: <span id="earningLeads">0</span></h2>
+</div>
+  
 <div class="card">
   <h2>Total Earnings: R <span id="totalEarnings">0</span></h2>
 </div>
@@ -89,7 +93,10 @@
   // NEW PART (Step 3)
   document.getElementById("totalLeads").innerText =
     data.total_leads ?? 0;
-
+   
+   document.getElementById("earningLeads").innerText =
+  data.earning_leads ?? 0;
+   
   document.getElementById("totalEarnings").innerText =
     data.total_earnings ?? 0;
 }
