@@ -748,14 +748,8 @@ app.get("/r/:code", async (req, res) => {
        RETURNING *`,
       [affiliate.id, 1, 1, 25, "pending"]
     );
-
-    // 3. Redirect visitor to your website / booking page
-    res.json({
-  ok: true,
-  message: "Referral tracked successfully",
-  affiliate,
-  referral: referralResult.rows[0]
-});
+    
+    return res.redirect(`/lead-capture.html?ref=${code}`);
   } catch (error) {
     console.error("REFERRAL LINK ERROR:", error);
     return res.status(500).json({
