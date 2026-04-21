@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Affiliate Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #38bdf8;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Affiliate Lead Dashboard</h1>
+
+<div class="card">
+  <h2>Enter Affiliate Code</h2>
+  <input id="code" placeholder="e.g. AFF001" />
+  <button onclick="loadAffiliate()">Load Leads</button>
+</div>
+
+<div class="card">
+  <h2>Affiliate Info</h2>
+  <pre id="affiliateInfo"></pre>
+</div>
+
+<div class="card">
+  <h2>Leads</h2>
+  <pre id="leadsOutput"></pre>
+</div>
+
+<script>
+  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+  // auto-fill from URL
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("code");
+
+  if (ref) {
+    document.getElementById("code").value = ref;
+    loadAffiliate();
+  }
+
+  async function loadAffiliate() {
+    const code = document.getElementById("code").value;
+
+    const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/leads");
+    const data = await res.json();
+
+    document.getElementById("affiliateInfo").innerText =
+      JSON.stringify(data.affiliate, null, 2);
+
+    document.getElementById("leadsOutput").innerText =
+      JSON.stringify(data.leads, null, 2);
+  }
+</script>
+
+</body>
+</html>
