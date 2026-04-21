@@ -14,8 +14,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve static files (HTML)
-app.use(express.static(path.join(__dirname, "../")));
 const app = express();
+app.use(express.static(path.join(__dirname, "../")));
 const PORT = process.env.PORT || 3000;
 const PRACTITIONER_FEE = 60;
 const AFFILIATE_COMMISSION = 25;
