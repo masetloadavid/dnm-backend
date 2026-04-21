@@ -911,15 +911,22 @@ app.get("/api/affiliate/:code/leads", async (req, res) => {
     );
 
     const totalLeads = leadsResult.rows.length;
-    const earnings = totalLeads * 25;
+
+const earningStatuses = ["booked", "paid"];
+const earningLeads = leadsResult.rows.filter(lead =>
+  earningStatuses.includes(lead.status)
+);
+
+const earnings = earningLeads.length * 25;
 
     res.json({
-      ok: true,
-      affiliate,
-      total_leads: totalLeads,
-      total_earnings: earnings,
-      leads: leadsResult.rows,
-    });
+  ok: true,
+  affiliate,
+  total_leads: totalLeads,
+  earning_leads: earningLeads.length,
+  total_earnings: earnings,
+  leads: leadsResult.rows,
+});
 
   } catch (error) {
     console.error("AFFILIATE LEADS ERROR:", error);
