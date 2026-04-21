@@ -74,18 +74,25 @@
     loadAffiliate();
   }
 
-  async function loadAffiliate() {
-    const code = document.getElementById("code").value;
+ async function loadAffiliate() {
+  const code = document.getElementById("code").value;
 
-    const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/leads");
-    const data = await res.json();
+  const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/leads");
+  const data = await res.json();
 
-    document.getElementById("affiliateInfo").innerText =
-      JSON.stringify(data.affiliate, null, 2);
+  document.getElementById("affiliateInfo").innerText =
+    JSON.stringify(data.affiliate, null, 2);
 
-    document.getElementById("leadsOutput").innerText =
-      JSON.stringify(data.leads, null, 2);
-  }
+  document.getElementById("leadsOutput").innerText =
+    JSON.stringify(data.leads, null, 2);
+
+  // NEW PART (Step 3)
+  document.getElementById("totalLeads").innerText =
+    data.total_leads ?? 0;
+
+  document.getElementById("totalEarnings").innerText =
+    data.total_earnings ?? 0;
+}
 </script>
 
 </body>
