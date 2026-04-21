@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DNM Lead Management Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    button, select, input {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+    }
+    button {
+      background: #38bdf8;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Doktor Near Me - Lead Dashboard</h1>
+
+  <div class="card">
+    <h2>All Leads</h2>
+    <button onclick="loadLeads()">Load Leads</button>
+    <pre id="leadsOutput"></pre>
+  </div>
+
+  <div class="card">
+    <h2>View One Lead</h2>
+    <input id="leadId" placeholder="Enter Lead ID" />
+    <button onclick="loadOneLead()">Load Lead</button>
+    <pre id="singleLeadOutput"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Update Lead Status</h2>
+    <input id="updateLeadId" placeholder="Lead ID" />
+    <select id="newStatus">
+      <option value="new">new</option>
+      <option value="contacted">contacted</option>
+      <option value="booked">booked</option>
+      <option value="paid">paid</option>
+    </select>
+    <button onclick="updateLeadStatus()">Update Status</button>
+    <pre id="updateOutput"></pre>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    async function loadLeads() {
+      const res = await fetch(BASE_URL + "/api/leads");
+      const data = await res.json();
+      document.getElementById("leadsOutput").innerText =
+        JSON.stringify(data, null, 2);
+    }
+
+    async function loadOneLead() {
+      const id = document.getElementById("leadId").value;
+      const res = await fetch(BASE_URL + "/api/leads/" + id);
+      const data = await res.json();
+      document.getElementById("singleLeadOutput").innerText =
+        JSON.stringify(data, null, 2);
+    }
+
+    async function updateLeadStatus() {
+      const id = document.getElementById("updateLeadId").value;
+      const status = document.getElementById("newStatus").value;
+
+      const res = await fetch(BASE_URL + "/api/leads/" + id + "/status", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ status })
+      });
+
+      const data = await res.json();
+      document.getElementById("updateOutput").innerText =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
