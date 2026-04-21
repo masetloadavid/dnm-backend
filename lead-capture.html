@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doktor Near Me Lead Capture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 30px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 12px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Through Doktor Near Me</h1>
+    <p>Please fill in your details and we will contact you.</p>
+
+    <input type="text" id="referral_code" placeholder="Referral Code" />
+    <input type="text" id="full_name" placeholder="Full Name" />
+    <input type="text" id="phone" placeholder="Phone Number" />
+    <input type="email" id="email" placeholder="Email (optional)" />
+    <textarea id="notes" placeholder="Notes (optional)"></textarea>
+
+    <button onclick="submitLead()">Submit Lead</button>
+
+    <h3>Response</h3>
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    const params = new URLSearchParams(window.location.search);
+    const refFromUrl = params.get("ref");
+
+    if (refFromUrl) {
+      document.getElementById("referral_code").value = refFromUrl;
+    }
+
+    async function submitLead() {
+      const payload = {
+        referral_code: document.getElementById("referral_code").value,
+        full_name: document.getElementById("full_name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        notes: document.getElementById("notes").value
+      };
+
+      const res = await fetch(BASE_URL + "/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
