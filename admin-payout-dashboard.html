@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Payout Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+    .affiliate-card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Doktor Near Me - Admin Payout Dashboard</h1>
+
+  <div class="card">
+    <button onclick="loadAdminPayouts()">Load Affiliate Payout Summary</button>
+  </div>
+
+  <div class="card">
+    <h2>Affiliate Summaries</h2>
+    <div id="affiliateSummaries"></div>
+  </div>
+
+  <div class="card">
+    <button onclick="loadPayoutHistory()">Load Payout History</button>
+  </div>
+
+  <div class="card">
+    <h2>Payout History</h2>
+    <pre id="payoutHistory"></pre>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    async function loadAdminPayouts() {
+      const res = await fetch(BASE_URL + "/api/admin/payouts");
+      const data = await res.json();
+
+      const container = document.getElementById("affiliateSummaries");
+
+      if (!data.ok || !data.affiliates?.length) {
+        container.innerHTML = "<p>No affiliate payout data found.</p>";
+        return;
+      }
+
+      container.innerHTML = data.affiliates.map(item => `
+        <div class="affiliate-card">
+          <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
+          <p><strong>Referral Code:</strong> ${item.referral_code}</p>
+          <p><strong>Total Leads:</strong> ${item.total_leads}</p>
+          <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
+          <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
+          <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
+          <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+        </div>
+      `).join("");
+    }
+
+    async function loadPayoutHistory() {
+      const res = await fetch(BASE_URL + "/api/admin/payout-history");
+      const data = await res.json();
+
+      document.getElementById("payoutHistory").innerText =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
