@@ -99,31 +99,6 @@
       const leadsData = await leadsRes.json();
       const payoutsData = await payoutsRes.json();
       const payoutHistoryData = await payoutHistoryRes.json();
-async function updateLeadStatus(leadId) {
-  const newStatus = document.getElementById("lead-status-" + leadId).value;
-
-  alert("Updating lead " + leadId + " to status: " + newStatus);
-
-  const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ status: newStatus })
-  });
-
-  const data = await res.json();
-
-  alert("Response: " + JSON.stringify(data));
-
-  if (data.ok) {
-    document.getElementById("status-" + leadId).innerText = data.lead.status;
-    loadDashboard();
-  } else {
-    alert("Failed to update lead status");
-    console.error(data);
-  }
-}      
 
       // Lead summary
       if (summary.ok) {
@@ -191,6 +166,30 @@ async function updateLeadStatus(leadId) {
 `).join("");
       }
     }
+    async function updateLeadStatus(leadId) {
+  const newStatus = document.getElementById("lead-status-" + leadId).value;
+
+
+  const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ status: newStatus })
+  });
+
+  const data = await res.json();
+
+
+  if (data.ok) {
+    document.getElementById("status-" + leadId).innerText = data.lead.status;
+    loadDashboard();
+  } else {
+    alert("Failed to update lead status");
+    console.error(data);
+  }
+}      
+
   </script>
 
 </body>
