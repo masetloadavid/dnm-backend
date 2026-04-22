@@ -99,9 +99,10 @@
       const leadsData = await leadsRes.json();
       const payoutsData = await payoutsRes.json();
       const payoutHistoryData = await payoutHistoryRes.json();
-      
 async function updateLeadStatus(leadId) {
   const newStatus = document.getElementById("lead-status-" + leadId).value;
+
+  alert("Updating lead " + leadId + " to status: " + newStatus);
 
   const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
     method: "PUT",
@@ -113,6 +114,8 @@ async function updateLeadStatus(leadId) {
 
   const data = await res.json();
 
+  alert("Response: " + JSON.stringify(data));
+
   if (data.ok) {
     document.getElementById("status-" + leadId).innerText = data.lead.status;
     loadDashboard();
@@ -120,7 +123,8 @@ async function updateLeadStatus(leadId) {
     alert("Failed to update lead status");
     console.error(data);
   }
-}
+}      
+
       // Lead summary
       if (summary.ok) {
         document.getElementById("sum-total").innerText = summary.total;
