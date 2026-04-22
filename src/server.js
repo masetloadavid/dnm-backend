@@ -936,6 +936,105 @@ const earnings = earningLeads.length * 25;
     });
   }
 });
+app.get("/api/affiliate/:code/payouts", async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    const affiliateResult = await query(
+      `SELECT * FROM affiliates WHERE referral_code = $1 LIMIT 1`,
+      [code]
+    );
+
+    if (!affiliateResult.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Affiliate not found",
+      });
+    }
+
+    const affiliate = affiliateResult.rows[0];
+
+    const leadsResult = await query(
+      `SELECT * FROM leads WHERE affiliate_id = $1 ORDER BY id DESC`,
+      [affiliate.id]
+    );
+
+    const earningStatuses = ["booked", "paid"];
+    const earningLeads = leadsResult.rows.filter(lead =>
+      earningStatuses.includes(lead.status)
+    );
+
+    const totalEarned = earningLeads.length * 25;
+
+    const payoutsResult = await query(
+      `SELECT COALESCE(SUM(amount), 0) AS total_paid
+       FROM payouts
+       WHERE affiliate_id = $1`,
+      [affiliate.id]
+    );
+
+    const totalPaid = Number(payoutsResult.rows[0].total_paid || 0);
+    const balanceDue = totalEarned - totalPaid;
+
+    const payoutHistory = await query(
+      `SELECT * FROM payouts WHERE affiliate_id = $1 ORDER BY id DESC`,
+      [affiliate.id]
+    );
+
+    res.json({
+      ok: true,
+      affiliate,
+      total_earned: totalEarned,
+      total_paid: totalPaid,
+      balance_due: balanceDue,
+      payout_history: payoutHistory.rows,
+    });
+  } catch (error) {
+    console.error("PAYOUT SUMMARY ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.post("/api/affiliate/:code/payouts", async (req, res) => {
+  try {
+    const { code } = req.params;
+    const { amount, notes } = req.body;
+
+    const affiliateResult = await query(
+      `SELECT * FROM affiliates WHERE referral_code = $1 LIMIT 1`,
+      [code]
+    );
+
+    if (!affiliateResult.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Affiliate not found",
+      });
+    }
+
+    const affiliate = affiliateResult.rows[0];
+
+    const payoutResult = await query(
+      `INSERT INTO payouts (affiliate_id, amount, notes)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [affiliate.id, amount, notes || null]
+    );
+
+    res.json({
+      ok: true,
+      payout: payoutResult.rows[0],
+    });
+  } catch (error) {
+    console.error("CREATE PAYOUT ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
