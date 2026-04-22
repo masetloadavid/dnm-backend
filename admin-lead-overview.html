@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Lead Overview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .mini-card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+    .lead-card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Doktor Near Me - Admin Lead Overview</h1>
+
+  <div class="card">
+    <button onclick="loadOverview()">Load Overview</button>
+  </div>
+
+  <div class="card">
+    <h2>Lead Summary</h2>
+    <div class="grid">
+      <div class="mini-card"><strong>Total</strong><div id="sum-total">0</div></div>
+      <div class="mini-card"><strong>New</strong><div id="sum-new">0</div></div>
+      <div class="mini-card"><strong>Contacted</strong><div id="sum-contacted">0</div></div>
+      <div class="mini-card"><strong>Booked</strong><div id="sum-booked">0</div></div>
+      <div class="mini-card"><strong>Paid</strong><div id="sum-paid">0</div></div>
+      <div class="mini-card"><strong>Cancelled</strong><div id="sum-cancelled">0</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>All Leads</h2>
+    <div id="leadsContainer"></div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    async function loadOverview() {
+      const [summaryRes, leadsRes] = await Promise.all([
+        fetch(BASE_URL + "/api/admin/lead-summary"),
+        fetch(BASE_URL + "/api/admin/leads")
+      ]);
+
+      const summary = await summaryRes.json();
+      const leadsData = await leadsRes.json();
+
+      if (summary.ok) {
+        document.getElementById("sum-total").innerText = summary.total;
+        document.getElementById("sum-new").innerText = summary.new;
+        document.getElementById("sum-contacted").innerText = summary.contacted;
+        document.getElementById("sum-booked").innerText = summary.booked;
+        document.getElementById("sum-paid").innerText = summary.paid;
+        document.getElementById("sum-cancelled").innerText = summary.cancelled;
+      }
+
+      const container = document.getElementById("leadsContainer");
+
+      if (!leadsData.ok || !leadsData.leads?.length) {
+        container.innerHTML = "<p>No leads found.</p>";
+        return;
+      }
+
+      container.innerHTML = leadsData.leads.map(lead => `
+        <div class="lead-card">
+          <p><strong>ID:</strong> ${lead.id}</p>
+          <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
+          <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
+          <p><strong>Name:</strong> ${lead.full_name}</p>
+          <p><strong>Phone:</strong> ${lead.phone}</p>
+          <p><strong>Email:</strong> ${lead.email || ""}</p>
+          <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+          <p><strong>Status:</strong> ${lead.status}</p>
+          <p><strong>Created:</strong> ${lead.created_at}</p>
+        </div>
+      `).join("");
+    }
+  </script>
+
+</body>
+</html>
