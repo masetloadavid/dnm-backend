@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DNM Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .mini-card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .item-card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Doktor Near Me - Admin Dashboard</h1>
+
+  <div class="card">
+    <button onclick="loadDashboard()">Load Full Dashboard</button>
+  </div>
+
+  <div class="card">
+    <h2>Lead Summary</h2>
+    <div class="grid">
+      <div class="mini-card"><strong>Total</strong><div id="sum-total">0</div></div>
+      <div class="mini-card"><strong>New</strong><div id="sum-new">0</div></div>
+      <div class="mini-card"><strong>Contacted</strong><div id="sum-contacted">0</div></div>
+      <div class="mini-card"><strong>Booked</strong><div id="sum-booked">0</div></div>
+      <div class="mini-card"><strong>Paid</strong><div id="sum-paid">0</div></div>
+      <div class="mini-card"><strong>Cancelled</strong><div id="sum-cancelled">0</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Affiliate Payout Summary</h2>
+    <div id="affiliatePayouts"></div>
+  </div>
+
+  <div class="card">
+    <h2>Payout History</h2>
+    <pre id="payoutHistory"></pre>
+  </div>
+
+  <div class="card">
+    <h2>All Leads</h2>
+    <div id="leadsContainer"></div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    async function loadDashboard() {
+      const [summaryRes, leadsRes, payoutsRes, payoutHistoryRes] = await Promise.all([
+        fetch(BASE_URL + "/api/admin/lead-summary"),
+        fetch(BASE_URL + "/api/admin/leads"),
+        fetch(BASE_URL + "/api/admin/payouts"),
+        fetch(BASE_URL + "/api/admin/payout-history")
+      ]);
+
+      const summary = await summaryRes.json();
+      const leadsData = await leadsRes.json();
+      const payoutsData = await payoutsRes.json();
+      const payoutHistoryData = await payoutHistoryRes.json();
+
+      // Lead summary
+      if (summary.ok) {
+        document.getElementById("sum-total").innerText = summary.total;
+        document.getElementById("sum-new").innerText = summary.new;
+        document.getElementById("sum-contacted").innerText = summary.contacted;
+        document.getElementById("sum-booked").innerText = summary.booked;
+        document.getElementById("sum-paid").innerText = summary.paid;
+        document.getElementById("sum-cancelled").innerText = summary.cancelled;
+      }
+
+      // Payout summaries
+      const payoutContainer = document.getElementById("affiliatePayouts");
+      if (!payoutsData.ok || !payoutsData.affiliates?.length) {
+        payoutContainer.innerHTML = "<p>No payout data found.</p>";
+      } else {
+        payoutContainer.innerHTML = payoutsData.affiliates.map(item => `
+          <div class="item-card">
+            <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
+            <p><strong>Referral Code:</strong> ${item.referral_code}</p>
+            <p><strong>Total Leads:</strong> ${item.total_leads}</p>
+            <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
+            <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
+            <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
+            <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+          </div>
+        `).join("");
+      }
+
+      // Payout history
+      document.getElementById("payoutHistory").innerText =
+        JSON.stringify(payoutHistoryData, null, 2);
+
+      // Leads
+      const leadsContainer = document.getElementById("leadsContainer");
+      if (!leadsData.ok || !leadsData.leads?.length) {
+        leadsContainer.innerHTML = "<p>No leads found.</p>";
+      } else {
+        leadsContainer.innerHTML = leadsData.leads.map(lead => `
+          <div class="item-card">
+            <p><strong>ID:</strong> ${lead.id}</p>
+            <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
+            <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
+            <p><strong>Name:</strong> ${lead.full_name}</p>
+            <p><strong>Phone:</strong> ${lead.phone}</p>
+            <p><strong>Email:</strong> ${lead.email || ""}</p>
+            <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+            <p><strong>Status:</strong> ${lead.status}</p>
+            <p><strong>Created:</strong> ${lead.created_at}</p>
+          </div>
+        `).join("");
+      }
+    }
+  </script>
+
+</body>
+</html>
