@@ -87,11 +87,27 @@
     const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/leads");
     const data = await res.json();
 
+    if (!data.ok) {
+      document.getElementById("affiliateInfo").innerText =
+        JSON.stringify(data, null, 2);
+      document.getElementById("leadsOutput").innerHTML = "";
+      document.getElementById("totalLeads").innerText = 0;
+      document.getElementById("earningLeads").innerText = 0;
+      document.getElementById("totalEarnings").innerText = 0;
+      return;
+    }
+
     document.getElementById("affiliateInfo").innerText =
       JSON.stringify(data.affiliate, null, 2);
 
-    document.getElementById("earningsInfo").innerText =
-      JSON.stringify(data.earnings, null, 2);
+    document.getElementById("totalLeads").innerText =
+      data.total_leads ?? 0;
+
+    document.getElementById("earningLeads").innerText =
+      data.earning_leads ?? 0;
+
+    document.getElementById("totalEarnings").innerText =
+      data.total_earnings ?? 0;
 
     renderLeads(data.leads || [], code);
   }
@@ -105,11 +121,11 @@
     }
 
     container.innerHTML = leads.map(lead => `
-      <div style="background:#0b1220; padding:15px; border-radius:10px; margin-bottom:15px;">
+      <div style="background:#020617; padding:15px; border-radius:10px; margin-bottom:15px;">
         <p><strong>ID:</strong> ${lead.id}</p>
         <p><strong>Name:</strong> ${lead.full_name}</p>
         <p><strong>Phone:</strong> ${lead.phone}</p>
-        <p><strong>Email:</strong> ${lead.email}</p>
+        <p><strong>Email:</strong> ${lead.email || ""}</p>
         <p><strong>Notes:</strong> ${lead.notes || ""}</p>
         <p><strong>Status:</strong> <span id="status-${lead.id}">${lead.status}</span></p>
         <p><strong>Created:</strong> ${lead.created_at}</p>
@@ -146,7 +162,6 @@
 
     if (data.ok) {
       document.getElementById("status-" + leadId).innerText = data.lead.status;
-      alert("Lead status updated successfully");
       loadAffiliate();
     } else {
       alert("Failed to update lead status");
