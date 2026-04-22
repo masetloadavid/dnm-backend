@@ -56,9 +56,30 @@
   <h2>Total Earnings: R <span id="totalEarnings">0</span></h2>
 </div>
   
+  <div class="card">
+  <h2>Total Paid Out: R <span id="totalPaid">0</span></h2>
+</div>
+
+<div class="card">
+  <h2>Balance Due: R <span id="balanceDue">0</span></h2>
+</div>
+  
 <div class="card">
   <h2>Affiliate Info</h2>
   <pre id="affiliateInfo"></pre>
+</div>
+
+  <div class="card">
+  <h2>Record Payout</h2>
+  <input id="payoutAmount" placeholder="Amount e.g. 25" />
+  <input id="payoutNotes" placeholder="Notes (optional)" />
+  <button onclick="recordPayout()">Record Payout</button>
+  <pre id="payoutOutput"></pre>
+</div>
+
+<div class="card">
+  <h2>Payout History</h2>
+  <pre id="payoutHistory"></pre>
 </div>
 
 <div class="card">
@@ -84,32 +105,42 @@
       return;
     }
 
-    const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/leads");
-    const data = await res.json();
+    const [leadRes, payoutRes] = await Promise.all([
+      fetch(BASE_URL + "/api/affiliate/" + code + "/leads"),
+      fetch(BASE_URL + "/api/affiliate/" + code + "/payouts")
+    ]);
 
-    if (!data.ok) {
+    const leadData = await leadRes.json();
+    const payoutData = await payoutRes.json();
+
+    if (!leadData.ok) {
       document.getElementById("affiliateInfo").innerText =
-        JSON.stringify(data, null, 2);
-      document.getElementById("leadsOutput").innerHTML = "";
-      document.getElementById("totalLeads").innerText = 0;
-      document.getElementById("earningLeads").innerText = 0;
-      document.getElementById("totalEarnings").innerText = 0;
+        JSON.stringify(leadData, null, 2);
       return;
     }
 
     document.getElementById("affiliateInfo").innerText =
-      JSON.stringify(data.affiliate, null, 2);
+      JSON.stringify(leadData.affiliate, null, 2);
 
     document.getElementById("totalLeads").innerText =
-      data.total_leads ?? 0;
+      leadData.total_leads ?? 0;
 
     document.getElementById("earningLeads").innerText =
-      data.earning_leads ?? 0;
+      leadData.earning_leads ?? 0;
 
     document.getElementById("totalEarnings").innerText =
-      data.total_earnings ?? 0;
+      leadData.total_earnings ?? 0;
 
-    renderLeads(data.leads || [], code);
+    document.getElementById("totalPaid").innerText =
+      payoutData.total_paid ?? 0;
+
+    document.getElementById("balanceDue").innerText =
+      payoutData.balance_due ?? 0;
+
+    document.getElementById("payoutHistory").innerText =
+      JSON.stringify(payoutData.payout_history ?? [], null, 2);
+
+    renderLeads(leadData.leads || [], code);
   }
 
   function renderLeads(leads, code) {
@@ -161,11 +192,33 @@
     const data = await res.json();
 
     if (data.ok) {
-      document.getElementById("status-" + leadId).innerText = data.lead.status;
       loadAffiliate();
     } else {
       alert("Failed to update lead status");
       console.error(data);
+    }
+  }
+
+  async function recordPayout() {
+    const code = document.getElementById("code").value.trim();
+    const amount = document.getElementById("payoutAmount").value;
+    const notes = document.getElementById("payoutNotes").value;
+
+    const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/payouts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ amount, notes })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("payoutOutput").innerText =
+      JSON.stringify(data, null, 2);
+
+    if (data.ok) {
+      loadAffiliate();
     }
   }
 </script>
