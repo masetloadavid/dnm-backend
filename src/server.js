@@ -1112,6 +1112,58 @@ app.get("/api/admin/payout-history", async (req, res) => {
     });
   }
 });
+app.get("/api/admin/leads", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT
+         l.*,
+         a.referral_code
+       FROM leads l
+       LEFT JOIN affiliates a ON a.id = l.affiliate_id
+       ORDER BY l.id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      leads: result.rows,
+    });
+  } catch (error) {
+    console.error("ADMIN LEADS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+
+app.get("/api/admin/lead-summary", async (req, res) => {
+  try {
+    const totalResult = await query(`SELECT COUNT(*) AS total FROM leads`);
+    const newResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'new'`);
+    const contactedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'contacted'`);
+    const bookedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'booked'`);
+    const paidResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'paid'`);
+    const cancelledResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'cancelled'`);
+
+    res.json({
+      ok: true,
+      total: Number(totalResult.rows[0].total),
+      new: Number(newResult.rows[0].total),
+      contacted: Number(contactedResult.rows[0].total),
+      booked: Number(bookedResult.rows[0].total),
+      paid: Number(paidResult.rows[0].total),
+      cancelled: Number(cancelledResult.rows[0].total),
+    });
+  } catch (error) {
+    console.error("ADMIN LEAD SUMMARY ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
