@@ -1035,6 +1035,83 @@ app.post("/api/affiliate/:code/payouts", async (req, res) => {
     });
   }
 });
+app.get("/api/admin/payouts", async (req, res) => {
+  try {
+    const affiliatesResult = await query(
+      `SELECT * FROM affiliates ORDER BY id DESC`
+    );
+
+    const summaries = [];
+
+    for (const affiliate of affiliatesResult.rows) {
+      const leadsResult = await query(
+        `SELECT * FROM leads WHERE affiliate_id = $1 ORDER BY id DESC`,
+        [affiliate.id]
+      );
+
+      const earningStatuses = ["booked", "paid"];
+      const earningLeads = leadsResult.rows.filter(lead =>
+        earningStatuses.includes(lead.status)
+      );
+
+      const totalEarned = earningLeads.length * 25;
+
+      const payoutsResult = await query(
+        `SELECT COALESCE(SUM(amount), 0) AS total_paid
+         FROM payouts
+         WHERE affiliate_id = $1`,
+        [affiliate.id]
+      );
+
+      const totalPaid = Number(payoutsResult.rows[0].total_paid || 0);
+      const balanceDue = totalEarned - totalPaid;
+
+      summaries.push({
+        affiliate_id: affiliate.id,
+        referral_code: affiliate.referral_code,
+        total_leads: leadsResult.rows.length,
+        earning_leads: earningLeads.length,
+        total_earned: totalEarned,
+        total_paid: totalPaid,
+        balance_due: balanceDue
+      });
+    }
+
+    res.json({
+      ok: true,
+      count: summaries.length,
+      affiliates: summaries
+    });
+  } catch (error) {
+    console.error("ADMIN PAYOUT SUMMARY ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
+app.get("/api/admin/payout-history", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT p.*, a.referral_code
+       FROM payouts p
+       LEFT JOIN affiliates a ON a.id = p.affiliate_id
+       ORDER BY p.id DESC`
+    );
+
+    res.json({
+      ok: true,
+      count: result.rows.length,
+      payouts: result.rows
+    });
+  } catch (error) {
+    console.error("ADMIN PAYOUT HISTORY ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
