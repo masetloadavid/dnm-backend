@@ -99,7 +99,28 @@
       const leadsData = await leadsRes.json();
       const payoutsData = await payoutsRes.json();
       const payoutHistoryData = await payoutHistoryRes.json();
+      
+async function updateLeadStatus(leadId) {
+  const newStatus = document.getElementById("lead-status-" + leadId).value;
 
+  const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ status: newStatus })
+  });
+
+  const data = await res.json();
+
+  if (data.ok) {
+    document.getElementById("status-" + leadId).innerText = data.lead.status;
+    loadDashboard();
+  } else {
+    alert("Failed to update lead status");
+    console.error(data);
+  }
+}
       // Lead summary
       if (summary.ok) {
         document.getElementById("sum-total").innerText = summary.total;
@@ -137,19 +158,33 @@
       if (!leadsData.ok || !leadsData.leads?.length) {
         leadsContainer.innerHTML = "<p>No leads found.</p>";
       } else {
-        leadsContainer.innerHTML = leadsData.leads.map(lead => `
-          <div class="item-card">
-            <p><strong>ID:</strong> ${lead.id}</p>
-            <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
-            <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
-            <p><strong>Name:</strong> ${lead.full_name}</p>
-            <p><strong>Phone:</strong> ${lead.phone}</p>
-            <p><strong>Email:</strong> ${lead.email || ""}</p>
-            <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-            <p><strong>Status:</strong> ${lead.status}</p>
-            <p><strong>Created:</strong> ${lead.created_at}</p>
-          </div>
-        `).join("");
+       leadsContainer.innerHTML = leadsData.leads.map(lead => `
+  <div class="item-card">
+    <p><strong>ID:</strong> ${lead.id}</p>
+    <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
+    <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
+    <p><strong>Name:</strong> ${lead.full_name}</p>
+    <p><strong>Phone:</strong> ${lead.phone}</p>
+    <p><strong>Email:</strong> ${lead.email || ""}</p>
+    <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+    <p><strong>Status:</strong> <span id="status-${lead.id}">${lead.status}</span></p>
+    <p><strong>Created:</strong> ${lead.created_at}</p>
+
+    <div style="margin-top:10px;">
+      <select id="lead-status-${lead.id}" style="padding:8px; border-radius:6px;">
+        <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+        <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+        <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+        <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+        <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+      </select>
+
+      <button onclick="updateLeadStatus(${lead.id})" style="margin-left:8px;">
+        Update Status
+      </button>
+    </div>
+  </div>
+`).join("");
       }
     }
   </script>
