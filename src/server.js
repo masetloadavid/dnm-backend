@@ -1220,6 +1220,54 @@ delete user.password;
     });
   }
 });
+app.post("/api/affiliate/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userResult = await query(
+      `SELECT * FROM users WHERE email = $1 AND role = 'affiliate' LIMIT 1`,
+      [email]
+    );
+
+    if (!userResult.rows.length) {
+      return res.status(401).json({
+        ok: false,
+        error: "Invalid credentials"
+      });
+    }
+
+    const user = userResult.rows[0];
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json({
+        ok: false,
+        error: "Invalid credentials"
+      });
+    }
+
+    const affiliateResult = await query(
+      `SELECT * FROM affiliates WHERE user_id = $1 LIMIT 1`,
+      [user.id]
+    );
+
+    delete user.password;
+
+    res.json({
+      ok: true,
+      message: "Login successful",
+      user,
+      affiliate: affiliateResult.rows[0]
+    });
+  } catch (error) {
+    console.error("AFFILIATE LOGIN ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
