@@ -88,7 +88,6 @@
 </div>
 
 <script>
-  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
 
  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
 
@@ -107,10 +106,6 @@ if (ref) {
   document.getElementById("code").value = savedCode;
   loadAffiliate();
 }
-  if (ref) {
-    document.getElementById("code").value = ref;
-    loadAffiliate();
-  }
 
   async function loadAffiliate() {
     const code = document.getElementById("code").value.trim();
