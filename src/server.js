@@ -1205,7 +1205,7 @@ app.post("/api/affiliate/register", async (req, res) => {
        RETURNING *`,
       [user.id, referralCode, 0]
     );
-
+delete user.password;
     res.json({
       ok: true,
       message: "Affiliate registered successfully",
