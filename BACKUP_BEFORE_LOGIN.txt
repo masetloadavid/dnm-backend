@@ -1,0 +1,7 @@
+This is the working version of the affiliate system before adding login and registration.
+Everything works:
+- referral links
+- lead capture
+- admin dashboard
+- affiliate dashboard
+- payouts
