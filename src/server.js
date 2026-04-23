@@ -1163,7 +1163,63 @@ app.get("/api/admin/lead-summary", async (req, res) => {
     });
   }
 });
+app.post("/api/affiliate/register", async (req, res) => {
+  try {
+    const { email, password, phone } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({
+        ok: false,
+        error: "Email and password are required"
+      });
+    }
+
+    const existingUser = await query(
+      `SELECT * FROM users WHERE email = $1 LIMIT 1`,
+      [email]
+    );
+
+    if (existingUser.rows.length) {
+      return res.status(400).json({
+        ok: false,
+        error: "Email already exists"
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const userResult = await query(
+      `INSERT INTO users (email, password, role)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [email, passwordHash, "affiliate"]
+    );
+
+    const user = userResult.rows[0];
+
+    const referralCode = "AFF" + String(user.id).padStart(3, "0");
+
+    const affiliateResult = await query(
+      `INSERT INTO affiliates (user_id, referral_code, total_earnings)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [user.id, referralCode, 0]
+    );
+
+    res.json({
+      ok: true,
+      message: "Affiliate registered successfully",
+      user,
+      affiliate: affiliateResult.rows[0]
+    });
+  } catch (error) {
+    console.error("AFFILIATE REGISTER ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
