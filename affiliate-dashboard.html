@@ -69,14 +69,6 @@
   <pre id="affiliateInfo"></pre>
 </div>
 
-  <div class="card">
-  <h2>Record Payout</h2>
-  <input id="payoutAmount" placeholder="Amount e.g. 25" />
-  <input id="payoutNotes" placeholder="Notes (optional)" />
-  <button onclick="recordPayout()">Record Payout</button>
-  <pre id="payoutOutput"></pre>
-</div>
-
 <div class="card">
   <h2>Payout History</h2>
   <pre id="payoutHistory"></pre>
@@ -208,28 +200,6 @@ if (ref) {
     }
   }
 
-  async function recordPayout() {
-    const code = document.getElementById("code").value.trim();
-    const amount = document.getElementById("payoutAmount").value;
-    const notes = document.getElementById("payoutNotes").value;
-
-    const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/payouts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ amount, notes })
-    });
-
-    const data = await res.json();
-
-    document.getElementById("payoutOutput").innerText =
-      JSON.stringify(data, null, 2);
-
-    if (data.ok) {
-      loadAffiliate();
-    }
-  }
 </script>
 
 </body>
