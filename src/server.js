@@ -739,6 +739,17 @@ app.get("/r/:code", async (req, res) => {
 
     const affiliate = affiliateResult.rows[0];
 
+    await query(
+  `INSERT INTO clicks (affiliate_id, referral_code, ip_address, user_agent)
+   VALUES ($1, $2, $3, $4)`,
+  [
+    affiliate.id,
+    code,
+    req.headers["x-forwarded-for"] || req.socket.remoteAddress || null,
+    req.headers["user-agent"] || null
+  ]
+);
+
     // 2. Create a referral record
     // We are using user_id = 1 and booking_id = 1 as placeholders for now
     // Later this will come from the real booking flow
