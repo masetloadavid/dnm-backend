@@ -929,7 +929,7 @@ app.get("/api/affiliate/:code/leads", async (req, res) => {
 
 const totalClicks = Number(clicksResult.rows[0].total_clicks || 0);
 
-    const totalLeads = leadsResult.rows.length;
+const totalLeads = leadsResult.rows.length;
 
 const earningStatuses = ["booked", "paid"];
 const earningLeads = leadsResult.rows.filter(lead =>
@@ -937,7 +937,11 @@ const earningLeads = leadsResult.rows.filter(lead =>
 );
 
 const earnings = earningLeads.length * 25;
-
+    
+const conversionRate = totalClicks > 0
+  ? Math.min((totalLeads / totalClicks) * 100, 100).toFixed(2)
+  : "0.00";
+  
  res.json({
   ok: true,
   affiliate,
@@ -945,9 +949,7 @@ const earnings = earningLeads.length * 25;
   total_leads: totalLeads,
   earning_leads: earningLeads.length,
   total_earnings: earnings,
-  conversion_rate: totalClicks > 0
-    ? ((totalLeads / totalClicks) * 100).toFixed(2)
-    : "0.00",
+  conversion_rate: conversionRate, 
   leads: leadsResult.rows,
 });
 
