@@ -920,6 +920,14 @@ app.get("/api/affiliate/:code/leads", async (req, res) => {
       `SELECT * FROM leads WHERE affiliate_id = $1 ORDER BY id DESC`,
       [affiliate.id]
     );
+    const clicksResult = await query(
+  `SELECT COUNT(*) AS total_clicks
+   FROM clicks
+   WHERE affiliate_id = $1`,
+  [affiliate.id]
+);
+
+const totalClicks = Number(clicksResult.rows[0].total_clicks || 0);
 
     const totalLeads = leadsResult.rows.length;
 
@@ -930,12 +938,16 @@ const earningLeads = leadsResult.rows.filter(lead =>
 
 const earnings = earningLeads.length * 25;
 
-    res.json({
+ res.json({
   ok: true,
   affiliate,
+  total_clicks: totalClicks,
   total_leads: totalLeads,
   earning_leads: earningLeads.length,
   total_earnings: earnings,
+  conversion_rate: totalClicks > 0
+    ? ((totalLeads / totalClicks) * 100).toFixed(2)
+    : "0.00",
   leads: leadsResult.rows,
 });
 
