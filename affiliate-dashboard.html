@@ -57,6 +57,13 @@
 </div>
   
   <div class="card">
+  <h2>Total Clicks: <span id="totalClicks">0</span></h2>
+</div>
+
+<div class="card">
+  <h2>Conversion Rate: <span id="conversionRate">0%</span></h2>
+</div>
+  <div class="card">
   <h2>Total Paid Out: R <span id="totalPaid">0</span></h2>
 </div>
 
@@ -125,6 +132,10 @@ if (ref) {
 
     document.getElementById("totalLeads").innerText =
       leadData.total_leads ?? 0;
+    
+    document.getElementById("totalClicks").innerText = data.total_clicks;
+    
+    document.getElementById("conversionRate").innerText = data.conversion_rate + "%";
 
     document.getElementById("earningLeads").innerText =
       leadData.earning_leads ?? 0;
