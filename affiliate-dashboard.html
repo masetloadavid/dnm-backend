@@ -163,6 +163,7 @@ if (ref) {
     document.getElementById("totalClicks").innerText = data.total_clicks;
     
     document.getElementById("conversionRate").innerText = data.conversion_rate + "%";
+    renderChart(data);
 
     document.getElementById("earningLeads").innerText =
       leadData.earning_leads ?? 0;
