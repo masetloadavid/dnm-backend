@@ -32,6 +32,27 @@
       border-radius: 8px;
       white-space: pre-wrap;
     }
+    .bar-row {
+  margin-bottom: 15px;
+}
+
+.bar-label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.bar {
+  background: #020617;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  background: #38bdf8;
+  color: black;
+  padding: 8px;
+  font-weight: bold;
+}
   </style>
 </head>
 <body>
@@ -63,6 +84,12 @@
 <div class="card">
   <h2>Conversion Rate: <span id="conversionRate">0%</span></h2>
 </div>
+  
+  <div class="card">
+  <h2>Performance Chart</h2>
+  <div id="chartArea"></div>
+</div>
+  
   <div class="card">
   <h2>Total Paid Out: R <span id="totalPaid">0</span></h2>
 </div>
