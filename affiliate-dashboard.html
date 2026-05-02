@@ -160,10 +160,9 @@ if (ref) {
     document.getElementById("totalLeads").innerText =
       leadData.total_leads ?? 0;
     
-    document.getElementById("totalClicks").innerText = data.total_clicks;
-    
-    document.getElementById("conversionRate").innerText = data.conversion_rate + "%";
-    renderChart(data);
+    document.getElementById("totalClicks").innerText = leadData.total_clicks ?? 0;
+    document.getElementById("conversionRate").innerText = (leadData.conversion_rate ?? "0.00") + "%";
+    renderChart(leadData);
 
     document.getElementById("earningLeads").innerText =
       leadData.earning_leads ?? 0;
@@ -182,7 +181,37 @@ if (ref) {
 
     renderLeads(leadData.leads || [], code);
   }
+  
+function renderChart(data) {
+  const clicks = data.total_clicks || 0;
+  const leads = data.total_leads || 0;
+  const earningLeads = data.earning_leads || 0;
 
+  const maxValue = Math.max(clicks, leads, earningLeads, 1);
+
+  document.getElementById("chartArea").innerHTML = `
+    <div class="bar-row">
+      <div class="bar-label">Clicks: ${clicks}</div>
+      <div class="bar">
+        <div class="bar-fill" style="width:${(clicks / maxValue) * 100}%">${clicks}</div>
+      </div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Leads: ${leads}</div>
+      <div class="bar">
+        <div class="bar-fill" style="width:${(leads / maxValue) * 100}%">${leads}</div>
+      </div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Booked/Paid: ${earningLeads}</div>
+      <div class="bar">
+        <div class="bar-fill" style="width:${(earningLeads / maxValue) * 100}%">${earningLeads}</div>
+      </div>
+    </div>
+  `;
+}
   function renderLeads(leads, code) {
     const container = document.getElementById("leadsOutput");
 
