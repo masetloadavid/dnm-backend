@@ -1225,11 +1225,11 @@ app.post("/api/affiliate/register", async (req, res) => {
     const referralCode = "AFF" + String(user.id).padStart(3, "0");
 
     const affiliateResult = await query(
-      `INSERT INTO affiliates (user_id, referral_code, total_earnings)
-       VALUES ($1, $2, $3)
-       RETURNING *`,
-      [user.id, referralCode, 0]
-    );
+  `INSERT INTO affiliates (user_id, referral_code, total_earnings, business_id)
+   VALUES ($1, $2, $3, $4)
+   RETURNING *`,
+  [user.id, referralCode, 0, 1]
+);
 delete user.password;
     res.json({
       ok: true,
