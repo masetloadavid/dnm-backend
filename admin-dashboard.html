@@ -202,20 +202,30 @@ loadBusinesses();
     console.error(data);
   }
 }      
+
 async function loadBusinesses() {
-  const res = await fetch(BASE_URL + "/api/admin/businesses");
-  const data = await res.json();
+  try {
+    const res = await fetch(BASE_URL + "/api/admin/businesses");
+    const data = await res.json();
 
-  const select = document.getElementById("businessSelect");
+    console.log("Businesses:", data); // 👈 debug
 
-  if (data.ok) {
-    select.innerHTML = data.businesses.map(b =>
-      `<option value="${b.id}">${b.name}</option>`
-    ).join("");
+    const select = document.getElementById("businessSelect");
+
+    if (data.ok && data.businesses.length > 0) {
+      select.innerHTML = data.businesses.map(b =>
+        `<option value="${b.id}">${b.name}</option>`
+      ).join("");
+    } else {
+      select.innerHTML = `<option>No businesses found</option>`;
+    }
+  } catch (err) {
+    console.error("Load businesses error:", err);
   }
 }
-
-loadBusinesses();
+window.onload = function () {
+  loadBusinesses();
+};
   </script>
 
 </body>
