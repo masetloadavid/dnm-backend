@@ -1295,6 +1295,24 @@ app.post("/api/affiliate/login", async (req, res) => {
     });
   }
 });
+app.get("/api/admin/businesses", async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT id, name, slug FROM businesses ORDER BY id ASC`
+    );
+
+    res.json({
+      ok: true,
+      businesses: result.rows,
+    });
+  } catch (error) {
+    console.error("FETCH BUSINESSES ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error),
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
