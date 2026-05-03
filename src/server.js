@@ -739,14 +739,15 @@ app.get("/r/:code", async (req, res) => {
 
     const affiliate = affiliateResult.rows[0];
 
-    await query(
-  `INSERT INTO clicks (affiliate_id, referral_code, ip_address, user_agent)
-   VALUES ($1, $2, $3, $4)`,
+  await query(
+  `INSERT INTO clicks (affiliate_id, referral_code, ip_address, user_agent, business_id)
+   VALUES ($1, $2, $3, $4, $5)`,
   [
     affiliate.id,
     code,
     req.headers["x-forwarded-for"] || req.socket.remoteAddress || null,
-    req.headers["user-agent"] || null
+    req.headers["user-agent"] || null,
+    affiliate.business_id || 1
   ]
 );
 
