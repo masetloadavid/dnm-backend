@@ -1044,11 +1044,11 @@ app.post("/api/affiliate/:code/payouts", async (req, res) => {
     const affiliate = affiliateResult.rows[0];
 
     const payoutResult = await query(
-      `INSERT INTO payouts (affiliate_id, amount, notes)
-       VALUES ($1, $2, $3)
-       RETURNING *`,
-      [affiliate.id, amount, notes || null]
-    );
+  `INSERT INTO payouts (affiliate_id, amount, notes, business_id)
+   VALUES ($1, $2, $3, $4)
+   RETURNING *`,
+  [affiliate.id, amount, notes || null, affiliate.business_id || 1]
+);
 
     res.json({
       ok: true,
