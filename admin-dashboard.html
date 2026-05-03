@@ -52,7 +52,10 @@
 <body>
 
   <h1>Doktor Near Me - Admin Dashboard</h1>
-
+  <div class="card">
+  <h2>Select Business</h2>
+  <select id="businessSelect"></select>
+  </div>
   <div class="card">
     <button onclick="loadDashboard()">Load Full Dashboard</button>
   </div>
@@ -94,13 +97,15 @@ if (enteredKey !== ADMIN_KEY) {
   document.body.innerHTML = "<h1>Access Denied</h1>";
   throw new Error("Access denied");
 }
-
+loadBusinesses();
     async function loadDashboard() {
+      const businessId = document.getElementById("businessSelect").value;
+      
       const [summaryRes, leadsRes, payoutsRes, payoutHistoryRes] = await Promise.all([
-        fetch(BASE_URL + "/api/admin/lead-summary"),
-        fetch(BASE_URL + "/api/admin/leads"),
-        fetch(BASE_URL + "/api/admin/payouts"),
-        fetch(BASE_URL + "/api/admin/payout-history")
+        fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId)),
+        fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId),
+        fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId)),
+        fetch(BASE_URL + "/api/admin/payout-history?business_id=" + businessId))
       ]);
 
       const summary = await summaryRes.json();
@@ -197,7 +202,18 @@ if (enteredKey !== ADMIN_KEY) {
     console.error(data);
   }
 }      
+async function loadBusinesses() {
+  const res = await fetch(BASE_URL + "/api/admin/businesses");
+  const data = await res.json();
 
+  const select = document.getElementById("businessSelect");
+
+  if (data.ok) {
+    select.innerHTML = data.businesses.map(b =>
+      `<option value="${b.id}">${b.name}</option>`
+    ).join("");
+  }
+}
   </script>
 
 </body>
