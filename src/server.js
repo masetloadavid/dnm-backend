@@ -794,20 +794,21 @@ app.post("/api/leads", async (req, res) => {
 
     const affiliate = affiliateResult.rows[0];
 
-    const leadResult = await query(
-      `INSERT INTO leads (affiliate_id, referral_code, full_name, phone, email, notes, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [
-        affiliate.id,
-        referral_code,
-        full_name,
-        phone,
-        email || null,
-        notes || null,
-        "new",
-      ]
-    );
+   const leadResult = await query(
+  `INSERT INTO leads (affiliate_id, referral_code, full_name, phone, email, notes, status, business_id)
+   VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+   RETURNING *`,
+  [
+    affiliate.id,
+    referral_code,
+    full_name,
+    phone,
+    email || null,
+    notes || null,
+    "new",
+    affiliate.business_id || 1,
+  ]
+);
 
     res.json({
       ok: true,
