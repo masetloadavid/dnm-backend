@@ -213,9 +213,9 @@ async function loadBusinesses() {
     const select = document.getElementById("businessSelect");
 
     if (data.ok && data.businesses.length > 0) {
-      select.innerHTML = data.businesses.map(b =>
-        `<option value="${b.id}">${b.name}</option>`
-      ).join("");
+  select.innerHTML = data.businesses.map(b =>
+  `<option value="${b.id}">${b.name}</option>`
+).join("");
     } else {
       select.innerHTML = `<option>No businesses found</option>`;
     }
