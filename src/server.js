@@ -1064,18 +1064,19 @@ app.post("/api/affiliate/:code/payouts", async (req, res) => {
 });
 app.get("/api/admin/payouts", async (req, res) => {
   try {
+    const businessId = req.query.business_id || 1;
     const affiliatesResult = await query(
-      `SELECT * FROM affiliates ORDER BY id DESC`
-    );
+  `SELECT * FROM affiliates WHERE business_id = $1 ORDER BY id DESC`,
+  [businessId]
+);
 
     const summaries = [];
 
     for (const affiliate of affiliatesResult.rows) {
-      const leadsResult = await query(
-        `SELECT * FROM leads WHERE affiliate_id = $1 ORDER BY id DESC`,
-        [affiliate.id]
-      );
-
+     const leadsResult = await query(
+  `SELECT * FROM leads WHERE affiliate_id = $1 AND business_id = $2 ORDER BY id DESC`,
+  [affiliate.id, businessId]
+);
       const earningStatuses = ["booked", "paid"];
       const earningLeads = leadsResult.rows.filter(lead =>
         earningStatuses.includes(lead.status)
@@ -1083,12 +1084,12 @@ app.get("/api/admin/payouts", async (req, res) => {
 
       const totalEarned = earningLeads.length * 25;
 
-      const payoutsResult = await query(
-        `SELECT COALESCE(SUM(amount), 0) AS total_paid
-         FROM payouts
-         WHERE affiliate_id = $1`,
-        [affiliate.id]
-      );
+    const payoutsResult = await query(
+  `SELECT COALESCE(SUM(amount), 0) AS total_paid
+   FROM payouts
+   WHERE affiliate_id = $1 AND business_id = $2`,
+  [affiliate.id, businessId]
+);
 
       const totalPaid = Number(payoutsResult.rows[0].total_paid || 0);
       const balanceDue = totalEarned - totalPaid;
@@ -1119,12 +1120,16 @@ app.get("/api/admin/payouts", async (req, res) => {
 });
 app.get("/api/admin/payout-history", async (req, res) => {
   try {
-    const result = await query(
-      `SELECT p.*, a.referral_code
-       FROM payouts p
-       LEFT JOIN affiliates a ON a.id = p.affiliate_id
-       ORDER BY p.id DESC`
-    );
+   const businessId = req.query.business_id || 1;
+
+const result = await query(
+  `SELECT p.*, a.referral_code
+   FROM payouts p
+   LEFT JOIN affiliates a ON a.id = p.affiliate_id
+   WHERE p.business_id = $1
+   ORDER BY p.id DESC`,
+  [businessId]
+);
 
     res.json({
       ok: true,
@@ -1141,14 +1146,18 @@ app.get("/api/admin/payout-history", async (req, res) => {
 });
 app.get("/api/admin/leads", async (req, res) => {
   try {
-    const result = await query(
-      `SELECT
-         l.*,
-         a.referral_code
-       FROM leads l
-       LEFT JOIN affiliates a ON a.id = l.affiliate_id
-       ORDER BY l.id DESC`
-    );
+  const businessId = req.query.business_id || 1;
+
+const result = await query(
+  `SELECT
+     l.*,
+     a.referral_code
+   FROM leads l
+   LEFT JOIN affiliates a ON a.id = l.affiliate_id
+   WHERE l.business_id = $1
+   ORDER BY l.id DESC`,
+  [businessId]
+);
 
     res.json({
       ok: true,
@@ -1166,13 +1175,13 @@ app.get("/api/admin/leads", async (req, res) => {
 
 app.get("/api/admin/lead-summary", async (req, res) => {
   try {
-    const totalResult = await query(`SELECT COUNT(*) AS total FROM leads`);
-    const newResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'new'`);
-    const contactedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'contacted'`);
-    const bookedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'booked'`);
-    const paidResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'paid'`);
-    const cancelledResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'cancelled'`);
-
+const businessId = req.query.business_id || 1;
+const totalResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE business_id = $1`, [businessId]);
+const newResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'new' AND business_id = $1`, [businessId]);
+const contactedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'contacted' AND business_id = $1`, [businessId]);
+const bookedResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'booked' AND business_id = $1`, [businessId]);
+const paidResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'paid' AND business_id = $1`, [businessId]);
+const cancelledResult = await query(`SELECT COUNT(*) AS total FROM leads WHERE status = 'cancelled' AND business_id = $1`, [businessId]); 
     res.json({
       ok: true,
       total: Number(totalResult.rows[0].total),
