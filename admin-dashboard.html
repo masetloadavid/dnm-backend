@@ -88,146 +88,132 @@
     <h2>All Leads</h2>
     <div id="leadsContainer"></div>
   </div>
+<script>
+  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+  const ADMIN_KEY = "dnm-admin-2026";
 
-  <script>
-    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
-    const ADMIN_KEY = "dnm-admin-2026";
+  const enteredKey = prompt("Enter admin key:");
 
-const enteredKey = prompt("Enter admin key:");
+  if (enteredKey !== ADMIN_KEY) {
+    document.body.innerHTML = "<h1>Access Denied</h1>";
+    throw new Error("Access denied");
+  }
 
-if (enteredKey !== ADMIN_KEY) {
-  document.body.innerHTML = "<h1>Access Denied</h1>";
-  throw new Error("Access denied");
-}
-   async function loadDashboard() {
-  const businessId = document.getElementById("businessSelect").value || 1;
-
-  const [summaryRes, leadsRes, payoutsRes, payoutHistoryRes] = await Promise.all([
-    fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId),
-    fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId),
-    fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId),
-    fetch(BASE_URL + "/api/admin/payout-history?business_id=" + businessId)
-  ]);
-
-      const summary = await summaryRes.json();
-      const leadsData = await leadsRes.json();
-      const payoutsData = await payoutsRes.json();
-      const payoutHistoryData = await payoutHistoryRes.json();
-
-      // Lead summary
-      if (summary.ok) {
-        document.getElementById("sum-total").innerText = summary.total;
-        document.getElementById("sum-new").innerText = summary.new;
-        document.getElementById("sum-contacted").innerText = summary.contacted;
-        document.getElementById("sum-booked").innerText = summary.booked;
-        document.getElementById("sum-paid").innerText = summary.paid;
-        document.getElementById("sum-cancelled").innerText = summary.cancelled;
-      }
-
-      // Payout summaries
-      const payoutContainer = document.getElementById("affiliatePayouts");
-      if (!payoutsData.ok || !payoutsData.affiliates?.length) {
-        payoutContainer.innerHTML = "<p>No payout data found.</p>";
-      } else {
-        payoutContainer.innerHTML = payoutsData.affiliates.map(item => `
-          <div class="item-card">
-            <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
-            <p><strong>Referral Code:</strong> ${item.referral_code}</p>
-            <p><strong>Total Leads:</strong> ${item.total_leads}</p>
-            <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
-            <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
-            <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
-            <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
-          </div>
-        `).join("");
-      }
-
-      // Payout history
-      document.getElementById("payoutHistory").innerText =
-        JSON.stringify(payoutHistoryData, null, 2);
-
-      // Leads
-      const leadsContainer = document.getElementById("leadsContainer");
-      if (!leadsData.ok || !leadsData.leads?.length) {
-        leadsContainer.innerHTML = "<p>No leads found.</p>";
-      } else {
-       leadsContainer.innerHTML = leadsData.leads.map(lead => `
-  <div class="item-card">
-    <p><strong>ID:</strong> ${lead.id}</p>
-    <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
-    <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
-    <p><strong>Name:</strong> ${lead.full_name}</p>
-    <p><strong>Phone:</strong> ${lead.phone}</p>
-    <p><strong>Email:</strong> ${lead.email || ""}</p>
-    <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-    <p><strong>Status:</strong> <span id="status-${lead.id}">${lead.status}</span></p>
-    <p><strong>Created:</strong> ${lead.created_at}</p>
-
-    <div style="margin-top:10px;">
-      <select id="lead-status-${lead.id}" style="padding:8px; border-radius:6px;">
-        <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
-        <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
-        <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
-        <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
-        <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
-      </select>
-
-      <button onclick="updateLeadStatus(${lead.id})" style="margin-left:8px;">
-        Update Status
-      </button>
-    </div>
-  </div>
-`).join("");
-      }
-    }
-    async function updateLeadStatus(leadId) {
-  const newStatus = document.getElementById("lead-status-" + leadId).value;
-
-
-  const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ status: newStatus })
+  window.addEventListener("DOMContentLoaded", function () {
+    loadBusinesses();
   });
 
-  const data = await res.json();
-
-
-  if (data.ok) {
-    document.getElementById("status-" + leadId).innerText = data.lead.status;
-    loadDashboard();
-  } else {
-    alert("Failed to update lead status");
-    console.error(data);
-  }
-}      
-
-async function loadBusinesses() {
-  try {
+  async function loadBusinesses() {
     const res = await fetch(BASE_URL + "/api/admin/businesses");
     const data = await res.json();
-
-    console.log("Businesses:", data); // 👈 debug
 
     const select = document.getElementById("businessSelect");
 
     if (data.ok && data.businesses.length > 0) {
-  select.innerHTML = data.businesses.map(b =>
-  `<option value="${b.id}">${b.name}</option>`
-).join("");
+      select.innerHTML = data.businesses.map(b =>
+        `<option value="${b.id}">${b.name}</option>`
+      ).join("");
     } else {
-      select.innerHTML = `<option>No businesses found</option>`;
+      select.innerHTML = `<option value="1">Doktor Near Me</option>`;
     }
-  } catch (err) {
-    console.error("Load businesses error:", err);
   }
-}
-window.onload = function () {
-  loadBusinesses();
-};
-  </script>
+
+  async function loadDashboard() {
+    const businessId = document.getElementById("businessSelect").value || 1;
+
+    const [summaryRes, leadsRes, payoutsRes, payoutHistoryRes] = await Promise.all([
+      fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId),
+      fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId),
+      fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId),
+      fetch(BASE_URL + "/api/admin/payout-history?business_id=" + businessId)
+    ]);
+
+    const summary = await summaryRes.json();
+    const leadsData = await leadsRes.json();
+    const payoutsData = await payoutsRes.json();
+    const payoutHistoryData = await payoutHistoryRes.json();
+
+    if (summary.ok) {
+      document.getElementById("sum-total").innerText = summary.total;
+      document.getElementById("sum-new").innerText = summary.new;
+      document.getElementById("sum-contacted").innerText = summary.contacted;
+      document.getElementById("sum-booked").innerText = summary.booked;
+      document.getElementById("sum-paid").innerText = summary.paid;
+      document.getElementById("sum-cancelled").innerText = summary.cancelled;
+    }
+
+    const payoutContainer = document.getElementById("affiliatePayouts");
+
+    if (payoutsData.ok && payoutsData.affiliates.length > 0) {
+      payoutContainer.innerHTML = payoutsData.affiliates.map(item => `
+        <div class="item-card">
+          <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
+          <p><strong>Referral Code:</strong> ${item.referral_code}</p>
+          <p><strong>Total Leads:</strong> ${item.total_leads}</p>
+          <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
+          <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
+          <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
+          <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+        </div>
+      `).join("");
+    } else {
+      payoutContainer.innerHTML = "<p>No payout data found.</p>";
+    }
+
+    document.getElementById("payoutHistory").innerText =
+      JSON.stringify(payoutHistoryData.payouts || [], null, 2);
+
+    const leadsContainer = document.getElementById("leadsContainer");
+
+    if (leadsData.ok && leadsData.leads.length > 0) {
+      leadsContainer.innerHTML = leadsData.leads.map(lead => `
+        <div class="item-card">
+          <p><strong>ID:</strong> ${lead.id}</p>
+          <p><strong>Affiliate ID:</strong> ${lead.affiliate_id ?? ""}</p>
+          <p><strong>Referral Code:</strong> ${lead.referral_code ?? ""}</p>
+          <p><strong>Name:</strong> ${lead.full_name}</p>
+          <p><strong>Phone:</strong> ${lead.phone}</p>
+          <p><strong>Email:</strong> ${lead.email || ""}</p>
+          <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+          <p><strong>Status:</strong> <span id="status-${lead.id}">${lead.status}</span></p>
+          <p><strong>Created:</strong> ${lead.created_at}</p>
+
+          <select id="lead-status-${lead.id}">
+            <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+            <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+            <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+            <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+            <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+          </select>
+
+          <button onclick="updateLeadStatus(${lead.id})">Update Status</button>
+        </div>
+      `).join("");
+    } else {
+      leadsContainer.innerHTML = "<p>No leads found.</p>";
+    }
+  }
+
+  async function updateLeadStatus(leadId) {
+    const newStatus = document.getElementById("lead-status-" + leadId).value;
+
+    const res = await fetch(BASE_URL + "/api/leads/" + leadId + "/status", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      loadDashboard();
+    } else {
+      alert("Failed to update lead status");
+    }
+  }
+</script>
 
 </body>
 </html>
