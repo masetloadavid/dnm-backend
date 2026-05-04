@@ -54,7 +54,9 @@
   <h1>Doktor Near Me - Admin Dashboard</h1>
   <div class="card">
   <h2>Select Business</h2>
-  <select id="businessSelect"></select>
+ <select id="businessSelect" style="width:250px; padding:10px; font-size:16px; border-radius:8px;">
+  <option value="1">Doktor Near Me</option>
+</select>
   </div>
   <div class="card">
     <button onclick="loadDashboard()">Load Full Dashboard</button>
@@ -98,7 +100,7 @@ if (enteredKey !== ADMIN_KEY) {
   throw new Error("Access denied");
 }
     async function loadDashboard() {
-      const businessId = document.getElementById("businessSelect").value;
+    const businessId = document.getElementById("businessSelect").value || 1;
       
       const [summaryRes, leadsRes, payoutsRes, payoutHistoryRes] = await Promise.all([
         fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId)),
