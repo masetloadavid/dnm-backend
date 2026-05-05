@@ -90,6 +90,7 @@
       const data = await res.json();
       document.getElementById("output").innerText = JSON.stringify(data, null, 2);
       if (data.ok) {
+        
 const business = data.business || {};
 
 const businessName = business.name || "Doktor Near Me";
@@ -98,7 +99,7 @@ const affiliateCommission = business.commission_per_lead || 25;
 const systemShare = totalFee - affiliateCommission;
 
 const message =
-  "New Lead:%0A" +
+  "New " + businessName + " Lead:%0A" +
   "Business: " + businessName + "%0A" +
   "Total Fee: R" + totalFee + "%0A" +
   "Affiliate Earns: R" + affiliateCommission + "%0A" +
