@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doktor Near Me Lead Capture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 30px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 12px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+   <h1 id="pageTitle">Book Your Stay at Divine Sleep</h1>
+   <p id="pageSubtitle">Fill in your details and Divine Sleep will contact you about your booking.</p>
 
+    <input type="text" id="referral_code" placeholder="Referral Code" />
+    <input type="text" id="full_name" placeholder="Full Name" />
+    <input type="text" id="phone" placeholder="Phone Number" />
+    <input type="email" id="email" placeholder="Email (optional)" />
+    <textarea id="notes" placeholder="Notes (optional)"></textarea>
+
+    <button onclick="submitLead()">Submit Lead</button>
+
+    <h3>Response</h3>
+    <pre id="output"></pre>
+    <a id="whatsappLink" href="#" target="_blank" style="display:none;">
+  <button>Send Lead on WhatsApp</button>
+</a>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    const params = new URLSearchParams(window.location.search);
+    const refFromUrl = params.get("ref");
+
+ if (refFromUrl) {
+  document.getElementById("referral_code").value = refFromUrl;
+  loadBusinessBranding(refFromUrl);
+}
+
+async function loadBusinessBranding(code) {
+  try {
+    const res = await fetch(BASE_URL + "/api/public/business-by-ref/" + code);
+    const data = await res.json();
+
+    if (!data.ok) return;
+
+    const business = data.business;
+    const name = business.name || "Doktor Near Me";
+
+    document.getElementById("pageTitle").innerText =
+      name.includes("Divine Sleep")
+        ? "Book Your Stay at " + name
+        : "Book Through " + name;
+
+    document.getElementById("pageSubtitle").innerText =
+      name.includes("Divine Sleep")
+        ? "Fill in your details and Divine Sleep will contact you about your booking."
+        : "Please fill in your details and we will contact you.";
+  } catch (error) {
+    console.error("Branding error:", error);
+  }
+}
+    async function submitLead() {
+      const payload = {
+        referral_code: document.getElementById("referral_code").value,
+        full_name: document.getElementById("full_name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        notes: document.getElementById("notes").value
+      };
+
+      const res = await fetch(BASE_URL + "/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+      if (data.ok) {
+        
+const business = data.business || {};
+
+const businessName = business.name || "Doktor Near Me";
+const totalFee = business.practitioner_fee || 60;
+const affiliateCommission = business.commission_per_lead || 25;
+const systemShare = totalFee - affiliateCommission;
+        
+const message =
+  "New Divine Sleep Booking Lead:%0A" +
+  "Business: " + businessName + "%0A" +
+  "Total Fee: R" + totalFee + "%0A" +
+  "Affiliate Earns: R" + affiliateCommission + "%0A" +
+  "System Keeps: R" + systemShare + "%0A" +
+  "%0A" +
+  "Name: " + payload.full_name + "%0A" +
+  "Phone: " + payload.phone + "%0A" +
+  "Email: " + (payload.email || "N/A") + "%0A" +
+  "Referral Code: " + payload.referral_code + "%0A" +
+  "Notes: " + (payload.notes || "N/A");
+
+  const adminNumber = "27686827763";
+const whatsappNumber = business.whatsapp_number || "27746084780";
+const waLink = "https://wa.me/" + whatsappNumber + "?text=" + message;
+
+  const link = document.getElementById("whatsappLink");
+  link.href = waLink;
+  link.style.display = "block";
+
+  window.open(waLink, "_blank"); 
+}
+      
+    }
+  </script>
+</body>
+</html>
