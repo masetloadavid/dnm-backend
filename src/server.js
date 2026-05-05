@@ -794,6 +794,13 @@ app.post("/api/leads", async (req, res) => {
     }
 
     const affiliate = affiliateResult.rows[0];
+    
+const businessResult = await query(
+  `SELECT * FROM businesses WHERE id = $1 LIMIT 1`,
+  [affiliate.business_id || 1]
+);
+
+const business = businessResult.rows[0];   
 
    const leadResult = await query(
   `INSERT INTO leads (affiliate_id, referral_code, full_name, phone, email, notes, status, business_id)
@@ -811,11 +818,12 @@ app.post("/api/leads", async (req, res) => {
   ]
 );
 
-    res.json({
-      ok: true,
-      message: "Lead captured successfully",
-      lead: leadResult.rows[0],
-    });
+   res.json({
+  ok: true,
+  message: "Lead captured successfully",
+  lead: leadResult.rows[0],
+  business
+});
   } catch (error) {
     console.error("CREATE LEAD ERROR:", error);
     res.status(500).json({
