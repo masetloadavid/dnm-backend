@@ -1337,6 +1337,44 @@ app.get("/api/admin/businesses", async (req, res) => {
     });
   }
 });
+app.get("/api/public/business-by-ref/:code", async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    const result = await query(
+      `SELECT
+         a.referral_code,
+         b.name,
+         b.slug,
+         b.whatsapp_number,
+         b.commission_per_lead,
+         b.practitioner_fee
+       FROM affiliates a
+       JOIN businesses b ON b.id = a.business_id
+       WHERE a.referral_code = $1
+       LIMIT 1`,
+      [code]
+    );
+
+    if (!result.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Business not found"
+      });
+    }
+
+    res.json({
+      ok: true,
+      business: result.rows[0]
+    });
+  } catch (error) {
+    console.error("BUSINESS BY REF ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
