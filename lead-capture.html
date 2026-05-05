@@ -42,8 +42,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>Book Through Doktor Near Me</h1>
-    <p>Please fill in your details and we will contact you.</p>
+   <h1 id="pageTitle">Book Through Doktor Near Me</h1>
+   <p id="pageSubtitle">Please fill in your details and we will contact you.</p>
 
     <input type="text" id="referral_code" placeholder="Referral Code" />
     <input type="text" id="full_name" placeholder="Full Name" />
@@ -69,7 +69,34 @@
     if (refFromUrl) {
       document.getElementById("referral_code").value = refFromUrl;
     }
+    
+if (refFromUrl) {
+  loadBusinessBranding(refFromUrl);
+}
 
+async function loadBusinessBranding(code) {
+  try {
+    const res = await fetch(BASE_URL + "/api/public/business-by-ref/" + code);
+    const data = await res.json();
+
+    if (!data.ok) return;
+
+    const business = data.business;
+    const name = business.name || "Doktor Near Me";
+
+    document.getElementById("pageTitle").innerText =
+      name.includes("Divine Sleep")
+        ? "Book Your Stay at " + name
+        : "Book Through " + name;
+
+    document.getElementById("pageSubtitle").innerText =
+      name.includes("Divine Sleep")
+        ? "Fill in your details and Divine Sleep will contact you about your booking."
+        : "Please fill in your details and we will contact you.";
+  } catch (error) {
+    console.error("Branding error:", error);
+  }
+}
     async function submitLead() {
       const payload = {
         referral_code: document.getElementById("referral_code").value,
