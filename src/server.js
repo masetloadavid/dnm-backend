@@ -938,7 +938,14 @@ const earningLeads = leadsResult.rows.filter(lead =>
   earningStatuses.includes(lead.status)
 );
 
-const earnings = earningLeads.length * 25;
+const business = await query(
+  `SELECT commission_per_lead FROM businesses WHERE id = $1 LIMIT 1`,
+  [affiliate.business_id]
+);
+
+const commission = business.rows[0]?.commission_per_lead || 25;
+
+const earnings = earningLeads.length * commission;
     
 const conversionRate = totalClicks > 0
   ? Math.min((totalLeads / totalClicks) * 100, 100).toFixed(2)
