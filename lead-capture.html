@@ -90,13 +90,17 @@
       const data = await res.json();
       document.getElementById("output").innerText = JSON.stringify(data, null, 2);
       if (data.ok) {
-  const message =
-    "New Doktor Near Me Lead:%0A" +
-    "Name: " + payload.full_name + "%0A" +
-    "Phone: " + payload.phone + "%0A" +
-    "Email: " + (payload.email || "N/A") + "%0A" +
-    "Referral Code: " + payload.referral_code + "%0A" +
-    "Notes: " + (payload.notes || "N/A");
+ const message =
+  "New Divine Sleep Booking Lead:%0A" +
+  "Business: Divine Sleep Guest House%0A" +
+  "Booking Fee: R85%0A" +
+  "Affiliate Earns: R40%0A" +
+  "%0A" +
+  "Name: " + payload.full_name + "%0A" +
+  "Phone: " + payload.phone + "%0A" +
+  "Email: " + (payload.email || "N/A") + "%0A" +
+  "Referral Code: " + payload.referral_code + "%0A" +
+  "Notes: " + (payload.notes || "N/A"); 
 
   const adminNumber = "27686827763";
   const waLink = "https://wa.me/" + adminNumber + "?text=" + message;
