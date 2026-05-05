@@ -761,7 +761,11 @@ app.get("/r/:code", async (req, res) => {
       [affiliate.id, 1, 1, 25, "pending"]
     );
     
-    return res.redirect(`/lead-capture.html?ref=${code}`);
+ if (affiliate.business_id === 2) {
+  return res.redirect(`/divine-sleep.html?ref=${code}`);
+}
+
+return res.redirect(`/lead-capture.html?ref=${code}`); 
   } catch (error) {
     console.error("REFERRAL LINK ERROR:", error);
     return res.status(500).json({
