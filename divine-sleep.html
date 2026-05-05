@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Doktor Near Me Lead Capture</title>
+  <title>Divine Sleep Lead Capture</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -79,7 +79,7 @@ async function loadBusinessBranding(code) {
     if (!data.ok) return;
 
     const business = data.business;
-    const name = business.name || "Doktor Near Me";
+   const businessName = business.name || "Divine Sleep Guest House";
 
     document.getElementById("pageTitle").innerText =
       name.includes("Divine Sleep")
@@ -117,9 +117,9 @@ async function loadBusinessBranding(code) {
         
 const business = data.business || {};
 
-const businessName = business.name || "Doktor Near Me";
-const totalFee = business.practitioner_fee || 60;
-const affiliateCommission = business.commission_per_lead || 25;
+const businessName = business.name || "Divine Sleep Guest House";
+const totalFee = business.practitioner_fee || 85;
+const affiliateCommission = business.commission_per_lead || 40;
 const systemShare = totalFee - affiliateCommission;
         
 const message =
@@ -135,7 +135,7 @@ const message =
   "Referral Code: " + payload.referral_code + "%0A" +
   "Notes: " + (payload.notes || "N/A");
 
-  const adminNumber = "27686827763";
+  const adminNumber = "27746084780";
 const whatsappNumber = business.whatsapp_number || "27746084780";
 const waLink = "https://wa.me/" + whatsappNumber + "?text=" + message;
 
