@@ -113,6 +113,13 @@
   <div id="leadsOutput"></div>
 </div>
 
+const loggedUser = JSON.parse(localStorage.getItem("logged_in_user") || "null");
+
+if (!loggedUser || loggedUser.role !== "affiliate") {
+  document.body.innerHTML = "<h1>Access Denied</h1><p>Please login as affiliate.</p>";
+  throw new Error("Affiliate access required");
+}
+
 <script>
 
  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
