@@ -1379,6 +1379,55 @@ app.get("/api/public/business-by-ref/:code", async (req, res) => {
     });
   }
 });
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userResult = await query(
+      `SELECT * FROM users WHERE email = $1 LIMIT 1`,
+      [email]
+    );
+
+    if (!userResult.rows.length) {
+      return res.status(401).json({ ok: false, error: "Invalid credentials" });
+    }
+
+    const user = userResult.rows[0];
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json({ ok: false, error: "Invalid credentials" });
+    }
+
+    delete user.password;
+
+    let affiliate = null;
+
+    if (user.role === "affiliate") {
+      const affiliateResult = await query(
+        `SELECT * FROM affiliates WHERE user_id = $1 LIMIT 1`,
+        [user.id]
+      );
+
+      affiliate = affiliateResult.rows[0] || null;
+    }
+
+    res.json({
+      ok: true,
+      message: "Login successful",
+      user,
+      affiliate
+    });
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
