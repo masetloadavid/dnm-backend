@@ -88,6 +88,13 @@
     <h2>All Leads</h2>
     <div id="leadsContainer"></div>
   </div>
+  
+  const loggedUser = JSON.parse(localStorage.getItem("logged_in_user") || "null");
+
+if (!loggedUser || loggedUser.role !== "admin") {
+  document.body.innerHTML = "<h1>Access Denied</h1><p>Please login as admin.</p>";
+  throw new Error("Admin access required");
+}
 <script>
   const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
   const ADMIN_KEY = "dnm-admin-2026";
