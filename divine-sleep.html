@@ -4,46 +4,89 @@
   <title>Divine Sleep Lead Capture</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      padding: 30px;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: #1e293b;
-      padding: 25px;
-      border-radius: 12px;
-    }
-    input, textarea, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      background: #38bdf8;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    pre {
-      background: #020617;
-      padding: 15px;
-      border-radius: 8px;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #07111f 0%, #0b1f36 100%);
+  color: white;
+  padding: 20px;
+}
+
+.container {
+  max-width: 520px;
+  margin: 40px auto;
+  background: #13243d;
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+}
+
+.brand-section {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 180px;
+  margin-bottom: 10px;
+}
+
+#pageTitle {
+  font-size: 38px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.tagline {
+  color: #b8d95b;
+  font-size: 20px;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+#pageSubtitle {
+  color: #d9d9d9;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+input,
+textarea,
+button {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+}
+
+input,
+textarea {
+  background: #f1f1f1;
+}
+
+}
   </style>
 </head>
 <body>
-  <div class="container">
-   <h1 id="pageTitle">Book Your Stay at Divine Sleep</h1>
-   <p id="pageSubtitle">Fill in your details and Divine Sleep will contact you about your booking.</p>
+
+<div class="container">
+  <div class="brand-section">
+    <img
+      src="https://chat.openai.com/backend-api/files/file_000000004e7471f588161c94a8144ceb"
+      alt="Divine Sleep Logo"
+      class="logo"
+    />
+
+    <h1 id="pageTitle">Book Your Stay at Divine Sleep</h1>
+
+    <p class="tagline">A touch of Heavenly Love</p>
+
+    <p id="pageSubtitle">
+      Fill in your details and Divine Sleep will contact you about your booking.
+    </p>
+  </div>
 
     <input type="text" id="referral_code" placeholder="Referral Code" />
     <input type="text" id="full_name" placeholder="Full Name" />
@@ -56,7 +99,7 @@
     <h3>Response</h3>
     <pre id="output"></pre>
     <a id="whatsappLink" href="#" target="_blank" style="display:none;">
-  <button>Send Lead on WhatsApp</button>
+  <button>Send Booking Request on WhatsApp</button>
 </a>
   </div>
 
