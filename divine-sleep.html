@@ -193,9 +193,9 @@ const waLink = "https://wa.me/" + whatsappNumber + "?text=" + message;
 
   const link = document.getElementById("whatsappLink");
   link.href = waLink;
-  link.style.display = "block";
+  link.style.display = "block";   
 
-  window.open(waLink, "_blank"); 
+  window.location.href = waLink;
 }
       
     }
