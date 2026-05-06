@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Affiliate System Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 30px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+    a {
+      text-decoration: none;
+    }
+    .card {
+      background: #1e293b;
+      padding: 22px;
+      border-radius: 14px;
+      color: white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    .card:hover {
+      background: #334155;
+    }
+    h1 {
+      margin-bottom: 5px;
+    }
+    p {
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Affiliate System Portal</h1>
+    <p>Manage businesses, affiliates, leads, payouts, and dashboards from one place.</p>
+
+    <div class="grid">
+      <a href="/admin-dashboard.html"><div class="card"><h2>Admin Dashboard</h2><p>All leads, payouts, businesses and summaries.</p></div></a>
+
+      <a href="/affiliate-dashboard.html"><div class="card"><h2>Affiliate Dashboard</h2><p>Affiliate leads, earnings, clicks and payouts.</p></div></a>
+
+      <a href="/lead-dashboard.html"><div class="card"><h2>Lead Dashboard</h2><p>Manage individual leads and statuses.</p></div></a>
+
+      <a href="/business-onboarding.html"><div class="card"><h2>Business Onboarding</h2><p>Add new businesses to the system.</p></div></a>
+
+      <a href="/api/admin/businesses"><div class="card"><h2>Business List</h2><p>View all businesses currently in the system.</p></div></a>
+
+      <a href="/affiliate-login.html"><div class="card"><h2>Affiliate Login</h2><p>Login and auto-load affiliate dashboard.</p></div></a>
+
+      <a href="/affiliate-register.html"><div class="card"><h2>Affiliate Registration</h2><p>Create new affiliate accounts.</p></div></a>
+
+      <a href="/lead-capture.html"><div class="card"><h2>Doktor Near Me Lead Page</h2><p>Main Doktor Near Me lead capture page.</p></div></a>
+
+      <a href="/divine-sleep.html"><div class="card"><h2>Divine Sleep Booking Page</h2><p>Guest house booking lead capture page.</p></div></a>
+    </div>
+  </div>
+</body>
+</html>
