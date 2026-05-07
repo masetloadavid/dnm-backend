@@ -53,10 +53,90 @@
       border-radius: 10px;
       margin-bottom: 12px;
     }
+    .app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: #020617;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar h2 {
+  color: #38bdf8;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 8px;
+  background: #1e293b;
+}
+
+.sidebar a:hover {
+  background: #38bdf8;
+  color: black;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+@media(max-width:768px){
+
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}
   </style>
 </head>
 
 <body>
+
+<div class="app-layout">
+
+  <div class="sidebar">
+
+    <h2>Divine Sleep</h2>
+
+    <a href="/business-dashboard.html">
+      Dashboard
+    </a>
+
+    <a href="#">
+      Leads
+    </a>
+
+    <a href="#">
+      Affiliates
+    </a>
+
+    <a href="#">
+      Analytics
+    </a>
+
+    <a href="#">
+      Settings
+    </a>
+
+    <button onclick="logout()">
+      Logout
+    </button>
+
+  </div>
+
+  <div class="main-content">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
   <h1>Business Owner Dashboard</h1>
 
@@ -165,5 +245,8 @@
   window.location.href = "/login.html";
 } 
   </script>
+      </div>
+
+</div>
 </body>
 </html>
