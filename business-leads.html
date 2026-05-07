@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Business Leads</title>
+  <style>
+    body {
+      visibility: hidden;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #020617;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar h2 {
+      color: #38bdf8;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      background: #1e293b;
+    }
+
+    .sidebar a:hover {
+      background: #38bdf8;
+      color: black;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 25px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    input, select, button {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin: 5px;
+    }
+
+    button {
+      background: #38bdf8;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lead-card {
+      background: #020617;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      margin-top: 10px;
+    }
+
+    @media(max-width:768px) {
+      .app-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-layout">
+    <div class="sidebar">
+      <h2>Divine Sleep</h2>
+      <a href="/business-dashboard.html">Dashboard</a>
+      <a href="/business-leads.html">Leads</a>
+      <a href="#">Affiliates</a>
+      <a href="#">Analytics</a>
+      <a href="#">Settings</a>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <h1>Business Leads CRM</h1>
+
+      <div class="card">
+        <h2>Filters</h2>
+        <input id="searchInput" placeholder="Search name, phone, email..." oninput="renderLeads()" />
+
+        <select id="statusFilter" onchange="renderLeads()">
+          <option value="">All Statuses</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="booked">Booked</option>
+          <option value="paid">Paid</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+
+        <button onclick="loadLeads()">Refresh</button>
+      </div>
+
+      <div class="card">
+        <h2>Leads</h2>
+        <div id="leadsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    const loggedUser =
+      JSON.parse(localStorage.getItem("logged_in_user") || "null");
+
+    if (!loggedUser || loggedUser.role !== "business_owner") {
+      document.body.style.visibility = "visible";
+      document.body.innerHTML =
+        "<h1>Access Denied</h1><p>Please login as business owner.</p>";
+      throw new Error("Business owner access required");
+    }
+
+    document.body.style.visibility = "visible";
+
+    let allLeads = [];
+
+    async function loadLeads() {
+      const businessId = loggedUser.business_id;
+
+      const res = await fetch(
+        BASE_URL + "/api/admin/leads?business_id=" + businessId
+      );
+
+      const data = await res.json();
+
+      if (data.ok) {
+        allLeads = data.leads || [];
+        renderLeads();
+      }
+    }
+
+    function renderLeads() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+
+      let filtered = allLeads.filter(lead => {
+        const text = (
+          (lead.full_name || "") + " " +
+          (lead.phone || "") + " " +
+          (lead.email || "") + " " +
+          (lead.referral_code || "")
+        ).toLowerCase();
+
+        const matchesSearch = text.includes(search);
+        const matchesStatus = !status || lead.status === status;
+
+        return matchesSearch && matchesStatus;
+      });
+
+      const container = document.getElementById("leadsContainer");
+
+      if (!filtered.length) {
+        container.innerHTML = "<p>No leads found.</p>";
+        return;
+      }
+
+      container.innerHTML = filtered.map(lead => `
+        <div class="lead-card">
+          <h3>${lead.full_name || "No name"}</h3>
+
+          <p><strong>Phone:</strong> ${lead.phone || ""}</p>
+          <p><strong>Email:</strong> ${lead.email || ""}</p>
+          <p><strong>Referral Code:</strong> ${lead.referral_code || ""}</p>
+          <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+          <p><strong>Status:</strong> <span id="status-text-${lead.id}">${lead.status}</span></p>
+          <p><strong>Created:</strong> ${lead.created_at}</p>
+
+          <div class="actions">
+            <select id="status-${lead.id}">
+              <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+              <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+              <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+              <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+              <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+            </select>
+
+            <button onclick="updateLeadStatus(${lead.id})">Update Status</button>
+
+            <a href="https://wa.me/27${(lead.phone || '').replace(/^0/, '').replace(/\\s/g, '')}" target="_blank">
+              <button>WhatsApp Guest</button>
+            </a>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function updateLeadStatus(leadId) {
+      const newStatus = document.getElementById("status-" + leadId).value;
+
+      const res = await fetch(
+        BASE_URL + "/api/leads/" + leadId + "/status",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            status: newStatus
+          })
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.ok) {
+        loadLeads();
+      } else {
+        alert("Failed to update lead status");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("logged_in_user");
+      localStorage.removeItem("affiliate_code");
+      window.location.href = "/login.html";
+    }
+
+    loadLeads();
+  </script>
+</body>
+</html>
