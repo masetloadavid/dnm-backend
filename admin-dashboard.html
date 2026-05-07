@@ -52,7 +52,13 @@
 </head>
 <body>
 
-  <h1>Doktor Near Me - Admin Dashboard</h1>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1>Business Owner Dashboard</h1>
+
+  <button onclick="logout()">
+    Logout
+  </button>
+</div>
   <div class="card">
   <h2>Select Business</h2>
  <select id="businessSelect" style="width:250px; padding:10px; font-size:16px; border-radius:8px;">
@@ -240,6 +246,14 @@ document.body.style.visibility = "visible";
       alert("Failed to update lead status");
     }
   }
+function logout() {
+
+  localStorage.removeItem("logged_in_user");
+
+  localStorage.removeItem("affiliate_code");
+
+  window.location.href = "/login.html";
+}
 </script>
 
 </body>
