@@ -58,7 +58,13 @@
 </head>
 <body>
 
-<h1>Affiliate Lead Dashboard</h1>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1>Business Owner Dashboard</h1>
+
+  <button onclick="logout()">
+    Logout
+  </button>
+</div>
 
 <div class="card">
   <h2>Enter Affiliate Code</h2>
@@ -278,7 +284,14 @@ function renderChart(data) {
       console.error(data);
     }
   }
+function logout() {
 
+  localStorage.removeItem("logged_in_user");
+
+  localStorage.removeItem("affiliate_code");
+
+  window.location.href = "/login.html";
+}
 </script>
 
 </body>
