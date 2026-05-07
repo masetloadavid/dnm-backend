@@ -57,7 +57,13 @@
 </head>
 
 <body>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
   <h1>Business Owner Dashboard</h1>
+
+  <button onclick="logout()">
+    Logout
+  </button>
+</div>
 
   <div class="card">
     <h2 id="businessName">Business</h2>
@@ -150,6 +156,14 @@
       "Business ID: " + loggedUser.business_id;
 
     loadBusinessDashboard();
+   function logout() {
+
+  localStorage.removeItem("logged_in_user");
+
+  localStorage.removeItem("affiliate_code");
+
+  window.location.href = "/login.html";
+} 
   </script>
 </body>
 </html>
