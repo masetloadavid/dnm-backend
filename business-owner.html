@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Business Owner</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 30px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 14px;
+      max-width: 450px;
+      margin: auto;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      margin-top: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <h1>Create Business Owner</h1>
+
+    <input id="email" placeholder="Business Owner Email" />
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+    />
+
+    <input
+      id="business_id"
+      type="number"
+      placeholder="Business ID"
+    />
+
+    <button onclick="createOwner()">
+      Create Business Owner
+    </button>
+
+    <pre id="output"></pre>
+
+  </div>
+
+  <script>
+
+    const BASE_URL =
+      "https://dnm-backend-production-218c.up.railway.app";
+
+    async function createOwner() {
+
+      const payload = {
+        email:
+          document.getElementById("email").value,
+
+        password:
+          document.getElementById("password").value,
+
+        business_id:
+          Number(
+            document.getElementById("business_id").value
+          )
+      };
+
+      const res = await fetch(
+        BASE_URL + "/api/admin/business-owner",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await res.json();
+
+      document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
+    }
+
+  </script>
+
+</body>
+</html>
