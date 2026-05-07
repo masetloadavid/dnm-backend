@@ -4,6 +4,7 @@
   <title>Affiliate Dashboard</title>
   <style>
     body {
+      visibility: hidden;
       font-family: Arial;
       background: #0f172a;
       color: white;
@@ -120,8 +121,10 @@ const loggedUser = JSON.parse(localStorage.getItem("logged_in_user") || "null");
 
 if (!loggedUser || loggedUser.role !== "affiliate") {
   document.body.innerHTML = "<h1>Access Denied</h1><p>Please login as affiliate.</p>";
+  document.body.style.visibility = "visible";
   throw new Error("Affiliate access required");
-
+  
+document.body.style.visibility = "visible";
 const params = new URLSearchParams(window.location.search);
 const ref = params.get("code");
 const savedCode = localStorage.getItem("affiliate_code");
