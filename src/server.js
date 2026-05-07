@@ -1428,6 +1428,52 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/admin/business-owner", async (req, res) => {
+  try {
+    const { email, password, business_id } = req.body;
+
+    if (!email || !password || !business_id) {
+      return res.status(400).json({
+        ok: false,
+        error: "Email, password and business_id are required"
+      });
+    }
+
+    const existingUser = await query(
+      `SELECT * FROM users WHERE email = $1 LIMIT 1`,
+      [email]
+    );
+
+    if (existingUser.rows.length) {
+      return res.status(400).json({
+        ok: false,
+        error: "Email already exists"
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const userResult = await query(
+      `INSERT INTO users (email, password, role, business_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, email, role, business_id, created_at`,
+      [email, passwordHash, "business_owner", business_id]
+    );
+
+    res.json({
+      ok: true,
+      message: "Business owner created successfully",
+      user: userResult.rows[0]
+    });
+  } catch (error) {
+    console.error("CREATE BUSINESS OWNER ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
