@@ -1109,7 +1109,7 @@ const totalClicks = Number(clicksResult.rows[0].total_clicks || 0);
 const conversionRate = totalClicks > 0
   ? Math.min((leadsResult.rows.length / totalClicks) * 100, 100).toFixed(2)
   : "0.00"; 
-);
+      
       const earningStatuses = ["booked", "paid"];
       const earningLeads = leadsResult.rows.filter(lead =>
         earningStatuses.includes(lead.status)
