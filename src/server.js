@@ -1095,6 +1095,8 @@ app.get("/api/admin/payouts", async (req, res) => {
      const leadsResult = await query(
   `SELECT * FROM leads WHERE affiliate_id = $1 AND business_id = $2 ORDER BY id DESC`,
   [affiliate.id, businessId]
+ );
+      
       const clicksResult = await query(
   `SELECT COUNT(*) AS total_clicks
    FROM clicks
