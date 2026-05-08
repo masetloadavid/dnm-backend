@@ -1095,6 +1095,18 @@ app.get("/api/admin/payouts", async (req, res) => {
      const leadsResult = await query(
   `SELECT * FROM leads WHERE affiliate_id = $1 AND business_id = $2 ORDER BY id DESC`,
   [affiliate.id, businessId]
+      const clicksResult = await query(
+  `SELECT COUNT(*) AS total_clicks
+   FROM clicks
+   WHERE affiliate_id = $1 AND business_id = $2`,
+  [affiliate.id, businessId]
+);
+
+const totalClicks = Number(clicksResult.rows[0].total_clicks || 0);
+
+const conversionRate = totalClicks > 0
+  ? Math.min((leadsResult.rows.length / totalClicks) * 100, 100).toFixed(2)
+  : "0.00"; 
 );
       const earningStatuses = ["booked", "paid"];
       const earningLeads = leadsResult.rows.filter(lead =>
@@ -1118,6 +1130,8 @@ app.get("/api/admin/payouts", async (req, res) => {
         referral_code: affiliate.referral_code,
         total_leads: leadsResult.rows.length,
         earning_leads: earningLeads.length,
+        total_clicks: totalClicks,
+        conversion_rate: conversionRate,
         total_earned: totalEarned,
         total_paid: totalPaid,
         balance_due: balanceDue
