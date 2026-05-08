@@ -173,7 +173,8 @@
         return `
           <div class="affiliate-card">
             <h3>${item.referral_code}</h3>
-
+            <p><strong>Status:</strong> ${item.status || "pending"}</p>
+          
             <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
             <p><strong>Total Leads:</strong> ${item.total_leads}</p>
             <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
@@ -183,6 +184,9 @@
 
             <p><strong>Referral Link:</strong></p>
             <input value="${link}" readonly />
+            
+            <button onclick="updateAffiliateStatus(${item.affiliate_id}, 'approved')">Approve</button>
+            <button onclick="updateAffiliateStatus(${item.affiliate_id}, 'rejected')">Reject</button>
 
             <button onclick="copyLink('${link}')">Copy Affiliate Link</button>
           </div>
@@ -194,6 +198,27 @@
       navigator.clipboard.writeText(link);
       alert("Affiliate link copied!");
     }
+
+    async function updateAffiliateStatus(affiliateId, status) {
+  const res = await fetch(
+    BASE_URL + "/api/admin/affiliates/" + affiliateId + "/status",
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    }
+  );
+
+  const data = await res.json();
+
+  if (data.ok) {
+    loadAffiliates();
+  } else {
+    alert("Failed to update affiliate status");
+  }
+}
 
     function logout() {
       localStorage.removeItem("logged_in_user");
