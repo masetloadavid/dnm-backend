@@ -1125,7 +1125,7 @@ const conversionRate = totalClicks > 0
 );
 
       const totalPaid = Number(payoutsResult.rows[0].total_paid || 0);
-      const balanceDue = totalEarned - totalPaid;
+      const balanceDue = Math.max(totalEarned - totalPaid, 0);
 
       summaries.push({
         affiliate_id: affiliate.id,
