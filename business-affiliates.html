@@ -183,6 +183,18 @@
             <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
             <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
             <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+            <div style="margin-top:15px;">
+  <input
+    type="number"
+    id="pay-${item.affiliate_id}"
+    placeholder="Amount Paid"
+    style="padding:10px;border-radius:8px;border:none;width:160px;"
+  />
+
+  <button onclick="markAffiliatePaid(${item.affiliate_id})">
+    Mark Paid
+  </button>
+</div>
 
             <p><strong>Referral Link:</strong></p>
             <input value="${link}" readonly />
@@ -229,6 +241,48 @@
     }
 
     loadAffiliates();
+    
+async function markAffiliatePaid(affiliateId) {
+
+  const amount =
+    document.getElementById(`pay-${affiliateId}`).value;
+
+  if (!amount) {
+    alert("Enter payout amount");
+    return;
+  }
+
+  try {
+
+    const res = await fetch(
+      BASE_URL + "/api/business/pay-affiliate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          affiliate_id: affiliateId,
+          amount
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.ok) {
+      alert("Affiliate payout recorded");
+      loadAffiliates();
+    } else {
+      alert(data.error || "Failed");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+}
+    
   </script>
 </body>
 </html>
