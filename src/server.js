@@ -1473,6 +1473,40 @@ app.post("/api/admin/business-owner", async (req, res) => {
     });
   }
 });
+app.put("/api/admin/affiliates/:id/status", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowed = ["pending", "approved", "rejected"];
+
+    if (!allowed.includes(status)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Invalid affiliate status"
+      });
+    }
+
+    const result = await query(
+      `UPDATE affiliates
+       SET status = $1
+       WHERE id = $2
+       RETURNING *`,
+      [status, id]
+    );
+
+    res.json({
+      ok: true,
+      affiliate: result.rows[0]
+    });
+  } catch (error) {
+    console.error("AFFILIATE STATUS ERROR:", error);
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
