@@ -1130,10 +1130,13 @@ const conversionRate = totalClicks > 0
       summaries.push({
         affiliate_id: affiliate.id,
         referral_code: affiliate.referral_code,
-        total_leads: leadsResult.rows.length,
-        earning_leads: earningLeads.length,
+
         total_clicks: totalClicks,
         conversion_rate: conversionRate,
+        
+        total_leads: leadsResult.rows.length,
+        earning_leads: earningLeads.length,
+        
         total_earned: totalEarned,
         total_paid: totalPaid,
         balance_due: balanceDue
