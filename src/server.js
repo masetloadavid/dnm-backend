@@ -1527,6 +1527,59 @@ app.put("/api/admin/affiliates/:id/status", async (req, res) => {
   }
 });
 
+app.post("/api/business/pay-affiliate", async (req, res) => {
+  try {
+    const { affiliate_id, amount } = req.body;
+
+    if (!affiliate_id || !amount) {
+      return res.status(400).json({
+        ok: false,
+        error: "affiliate_id and amount are required"
+      });
+    }
+
+    const affiliateResult = await query(
+      `SELECT * FROM affiliates WHERE id = $1 LIMIT 1`,
+      [affiliate_id]
+    );
+
+    if (!affiliateResult.rows.length) {
+      return res.status(404).json({
+        ok: false,
+        error: "Affiliate not found"
+      });
+    }
+
+    const affiliate = affiliateResult.rows[0];
+
+    const payoutResult = await query(
+      `INSERT INTO payouts (affiliate_id, amount, notes, business_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [
+        affiliate.id,
+        amount,
+        "Business owner payout",
+        affiliate.business_id || 1
+      ]
+    );
+
+    res.json({
+      ok: true,
+      message: "Payout recorded successfully",
+      payout: payoutResult.rows[0]
+    });
+
+  } catch (error) {
+    console.error("BUSINESS PAY AFFILIATE ERROR:", error);
+
+    res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
