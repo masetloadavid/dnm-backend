@@ -1,0 +1,21 @@
+{
+  "name": "Affiliate Booking CRM",
+  "short_name": "Booking CRM",
+  "start_url": "/login.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/divine-sleep-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/divine-sleep-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
