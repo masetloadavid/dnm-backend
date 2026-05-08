@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Business Analytics</title>
+  <style>
+    body {
+      visibility: hidden;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #020617;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar h2 {
+      color: #38bdf8;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      background: #1e293b;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 25px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .box {
+      background: #020617;
+      padding: 18px;
+      border-radius: 12px;
+    }
+
+    .bar-wrap {
+      background: #020617;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0 18px;
+    }
+
+    .bar {
+      background: #38bdf8;
+      padding: 10px;
+      color: black;
+      font-weight: bold;
+      min-width: 30px;
+    }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @media(max-width:768px) {
+      .app-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-layout">
+    <div class="sidebar">
+      <h2>Divine Sleep</h2>
+      <a href="/business-dashboard.html">Dashboard</a>
+      <a href="/business-leads.html">Leads</a>
+      <a href="/business-affiliates.html">Affiliates</a>
+      <a href="/business-analytics.html">Analytics</a>
+      <a href="#">Settings</a>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <h1>Business Analytics</h1>
+
+      <div class="card">
+        <button onclick="loadAnalytics()">Refresh Analytics</button>
+      </div>
+
+      <div class="card">
+        <h2>Key Metrics</h2>
+        <div class="grid">
+          <div class="box">Total Leads<br><strong id="totalLeads">0</strong></div>
+          <div class="box">Booked/Paid Leads<br><strong id="earningLeads">0</strong></div>
+          <div class="box">Total Clicks<br><strong id="totalClicks">0</strong></div>
+          <div class="box">Conversion Rate<br><strong id="conversionRate">0%</strong></div>
+          <div class="box">Affiliate Earnings<br><strong id="totalEarned">R 0</strong></div>
+          <div class="box">Paid Out<br><strong id="totalPaid">R 0</strong></div>
+          <div class="box">Balance Due<br><strong id="balanceDue">R 0</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Performance Chart</h2>
+
+        <p><strong>Clicks</strong></p>
+        <div class="bar-wrap">
+          <div id="clicksBar" class="bar" style="width:0%">0</div>
+        </div>
+
+        <p><strong>Leads</strong></p>
+        <div class="bar-wrap">
+          <div id="leadsBar" class="bar" style="width:0%">0</div>
+        </div>
+
+        <p><strong>Booked/Paid</strong></p>
+        <div class="bar-wrap">
+          <div id="bookedBar" class="bar" style="width:0%">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Affiliate Leaderboard</h2>
+        <div id="leaderboard"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    const loggedUser =
+      JSON.parse(localStorage.getItem("logged_in_user") || "null");
+
+    if (!loggedUser || loggedUser.role !== "business_owner") {
+      document.body.style.visibility = "visible";
+      document.body.innerHTML =
+        "<h1>Access Denied</h1><p>Please login as business owner.</p>";
+      throw new Error("Business owner access required");
+    }
+
+    document.body.style.visibility = "visible";
+
+    async function loadAnalytics() {
+      const businessId = loggedUser.business_id;
+
+      const res = await fetch(
+        BASE_URL + "/api/admin/payouts?business_id=" + businessId
+      );
+
+      const data = await res.json();
+
+      const affiliates = data.affiliates || [];
+
+      const totalLeads = affiliates.reduce((sum, a) => sum + Number(a.total_leads || 0), 0);
+      const earningLeads = affiliates.reduce((sum, a) => sum + Number(a.earning_leads || 0), 0);
+      const totalClicks = affiliates.reduce((sum, a) => sum + Number(a.total_clicks || 0), 0);
+      const totalEarned = affiliates.reduce((sum, a) => sum + Number(a.total_earned || 0), 0);
+      const totalPaid = affiliates.reduce((sum, a) => sum + Number(a.total_paid || 0), 0);
+      const balanceDue = affiliates.reduce((sum, a) => sum + Number(a.balance_due || 0), 0);
+
+      const conversionRate = totalClicks > 0
+        ? Math.min((totalLeads / totalClicks) * 100, 100).toFixed(2)
+        : "0.00";
+
+      document.getElementById("totalLeads").innerText = totalLeads;
+      document.getElementById("earningLeads").innerText = earningLeads;
+      document.getElementById("totalClicks").innerText = totalClicks;
+      document.getElementById("conversionRate").innerText = conversionRate + "%";
+      document.getElementById("totalEarned").innerText = "R " + totalEarned;
+      document.getElementById("totalPaid").innerText = "R " + totalPaid;
+      document.getElementById("balanceDue").innerText = "R " + balanceDue;
+
+      const maxValue = Math.max(totalClicks, totalLeads, earningLeads, 1);
+
+      setBar("clicksBar", totalClicks, maxValue);
+      setBar("leadsBar", totalLeads, maxValue);
+      setBar("bookedBar", earningLeads, maxValue);
+
+      renderLeaderboard(affiliates);
+    }
+
+    function setBar(id, value, maxValue) {
+      const percent = Math.max((value / maxValue) * 100, 5);
+      const bar = document.getElementById(id);
+      bar.style.width = percent + "%";
+      bar.innerText = value;
+    }
+
+    function renderLeaderboard(affiliates) {
+      const container = document.getElementById("leaderboard");
+
+      if (!affiliates.length) {
+        container.innerHTML = "<p>No affiliate data found.</p>";
+        return;
+      }
+
+      const sorted = [...affiliates].sort(
+        (a, b) => Number(b.total_earned || 0) - Number(a.total_earned || 0)
+      );
+
+      container.innerHTML = sorted.map((item, index) => `
+        <div class="box" style="margin-bottom:10px;">
+          <h3>#${index + 1} ${item.referral_code}</h3>
+          <p><strong>Total Leads:</strong> ${item.total_leads}</p>
+          <p><strong>Total Clicks:</strong> ${item.total_clicks}</p>
+          <p><strong>Conversion:</strong> ${item.conversion_rate}%</p>
+          <p><strong>Booked/Paid:</strong> ${item.earning_leads}</p>
+          <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
+          <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+        </div>
+      `).join("");
+    }
+
+    function logout() {
+      localStorage.removeItem("logged_in_user");
+      localStorage.removeItem("affiliate_code");
+      window.location.href = "/login.html";
+    }
+
+    loadAnalytics();
+  </script>
+</body>
+</html>
