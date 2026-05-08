@@ -1123,7 +1123,15 @@ const conversionRate = totalClicks > 0
         earningStatuses.includes(lead.status)
       );
 
-      const totalEarned = earningLeads.length * 25;
+      const businessResult = await query(
+  `SELECT commission_per_lead FROM businesses WHERE id = $1 LIMIT 1`,
+  [businessId]
+);
+
+const commissionPerLead =
+  Number(businessResult.rows[0]?.commission_per_lead || 25);
+
+const totalEarned = earningLeads.length * commissionPerLead;
 
     const payoutsResult = await query(
   `SELECT COALESCE(SUM(amount), 0) AS total_paid
