@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Business Affiliates</title>
+  <style>
+    body {
+      visibility: hidden;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #020617;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar h2 {
+      color: #38bdf8;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      background: #1e293b;
+    }
+
+    .sidebar a:hover {
+      background: #38bdf8;
+      color: black;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 25px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    .affiliate-card {
+      background: #020617;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    @media(max-width:768px) {
+      .app-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-layout">
+    <div class="sidebar">
+      <h2>Divine Sleep</h2>
+      <a href="/business-dashboard.html">Dashboard</a>
+      <a href="/business-leads.html">Leads</a>
+      <a href="/business-affiliates.html">Affiliates</a>
+      <a href="#">Analytics</a>
+      <a href="#">Settings</a>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <h1>Affiliate Management</h1>
+
+      <div class="card">
+        <h2>Search Affiliates</h2>
+        <input id="searchInput" placeholder="Search by referral code..." oninput="renderAffiliates()" />
+        <button onclick="loadAffiliates()">Refresh</button>
+      </div>
+
+      <div class="card">
+        <h2>Affiliates</h2>
+        <div id="affiliatesContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    const loggedUser =
+      JSON.parse(localStorage.getItem("logged_in_user") || "null");
+
+    if (!loggedUser || loggedUser.role !== "business_owner") {
+      document.body.style.visibility = "visible";
+      document.body.innerHTML =
+        "<h1>Access Denied</h1><p>Please login as business owner.</p>";
+      throw new Error("Business owner access required");
+    }
+
+    document.body.style.visibility = "visible";
+
+    let allAffiliates = [];
+
+    async function loadAffiliates() {
+      const businessId = loggedUser.business_id;
+
+      const res = await fetch(
+        BASE_URL + "/api/admin/payouts?business_id=" + businessId
+      );
+
+      const data = await res.json();
+
+      if (data.ok) {
+        allAffiliates = data.affiliates || [];
+        renderAffiliates();
+      }
+    }
+
+    function renderAffiliates() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+
+      const filtered = allAffiliates.filter(item =>
+        (item.referral_code || "").toLowerCase().includes(search)
+      );
+
+      const container = document.getElementById("affiliatesContainer");
+
+      if (!filtered.length) {
+        container.innerHTML = "<p>No affiliates found.</p>";
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const link = BASE_URL + "/r/" + item.referral_code;
+
+        return `
+          <div class="affiliate-card">
+            <h3>${item.referral_code}</h3>
+
+            <p><strong>Affiliate ID:</strong> ${item.affiliate_id}</p>
+            <p><strong>Total Leads:</strong> ${item.total_leads}</p>
+            <p><strong>Booked/Paid Leads:</strong> ${item.earning_leads}</p>
+            <p><strong>Total Earned:</strong> R ${item.total_earned}</p>
+            <p><strong>Total Paid:</strong> R ${item.total_paid}</p>
+            <p><strong>Balance Due:</strong> R ${item.balance_due}</p>
+
+            <p><strong>Referral Link:</strong></p>
+            <input value="${link}" readonly />
+
+            <button onclick="copyLink('${link}')">Copy Affiliate Link</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function copyLink(link) {
+      navigator.clipboard.writeText(link);
+      alert("Affiliate link copied!");
+    }
+
+    function logout() {
+      localStorage.removeItem("logged_in_user");
+      localStorage.removeItem("affiliate_code");
+      window.location.href = "/login.html";
+    }
+
+    loadAffiliates();
+  </script>
+</body>
+</html>
