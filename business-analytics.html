@@ -162,9 +162,12 @@
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
 
     const loggedUser =
-      JSON.parse(localStorage.getItem("logged_in_user") || "null");
+  JSON.parse(localStorage.getItem("logged_in_user") || "null");
 
-    if (!loggedUser || loggedUser.role !== "business_owner") {
+const isLoggedIn =
+  localStorage.getItem("is_logged_in");
+
+if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       document.body.style.visibility = "visible";
       document.body.innerHTML =
         "<h1>Access Denied</h1><p>Please login as business owner.</p>";
