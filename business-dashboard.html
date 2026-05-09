@@ -181,9 +181,7 @@ const isLoggedIn =
 
 if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       document.body.style.visibility = "visible";
-      document.body.innerHTML =
-        "<h1>Access Denied</h1><p>Please login as business owner.</p>";
-      throw new Error("Business owner access required");
+      window.location.href = "/login.html";
     }
 
     document.body.style.visibility = "visible";
