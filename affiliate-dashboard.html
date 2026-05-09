@@ -124,8 +124,10 @@
 
  const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
 const loggedUser = JSON.parse(localStorage.getItem("logged_in_user") || "null");
+const isLoggedIn =
+  localStorage.getItem("is_logged_in");
 
-if (!loggedUser || loggedUser.role !== "affiliate") {
+if (!loggedUser || !isLoggedIn || loggedUser.role !== "affiliate") {
   document.body.style.visibility = "visible";
   document.body.innerHTML =
     "<h1>Access Denied</h1><p>Please login as affiliate.</p>";
