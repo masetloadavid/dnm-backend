@@ -157,6 +157,14 @@ h2 {
 .main-content {
   padding: 12px;
 }
+    .badge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 6px;
+}
   </style>
 </head>
 
@@ -174,6 +182,7 @@ h2 {
 
     <a href="/business-leads.html">
   Leads
+  <span id="leadBadge" class="badge">0</span>
 </a>
 
     <a href="/business-affiliates.html">Affiliates</a>
@@ -258,6 +267,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       if (summary.ok) {
         document.getElementById("totalLeads").innerText = summary.total;
         document.getElementById("newLeads").innerText = summary.new;
+        document.getElementById("leadBadge").innerText = summary.new || 0;
         document.getElementById("contactedLeads").innerText = summary.contacted;
         document.getElementById("bookedLeads").innerText = summary.booked;
         document.getElementById("paidLeads").innerText = summary.paid;
