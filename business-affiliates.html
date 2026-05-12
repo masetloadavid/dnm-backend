@@ -84,14 +84,35 @@
     }
 
     @media(max-width:768px) {
-      .app-layout {
-        flex-direction: column;
-      }
+  .app-layout {
+    flex-direction: column;
+  }
 
-      .sidebar {
-        width: auto;
-      }
-    }
+  .sidebar {
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .sidebar h2 {
+    white-space: nowrap;
+    margin-right: 10px;
+  }
+
+  .sidebar a,
+  .sidebar button {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .main-content {
+    padding: 15px;
+  }
+}
   </style>
 </head>
 
