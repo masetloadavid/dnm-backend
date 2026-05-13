@@ -1,4 +1,4 @@
-const CACHE_NAME = "booking-crm-v13";
+const CACHE_NAME = "booking-crm-v14";
 
 const APP_FILES = [
   "/",
