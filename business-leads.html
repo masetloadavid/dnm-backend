@@ -124,26 +124,27 @@ button {
   }
 
   .sidebar {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #07122b;
+}
 
-  .sidebar h2 {
-    display: none;
-  }
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
 
   .sidebar a,
-  .sidebar button {
-    min-width: max-content;
-    margin: 0;
-  }
+.sidebar button {
+  min-width: max-content;
+  white-space: nowrap;
+}
 
   .main-content {
     padding: 15px;
