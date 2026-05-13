@@ -211,6 +211,9 @@ h2 {
   <div class="card">
     <h2 id="businessName">Business</h2>
     <button onclick="loadBusinessDashboard()">Load Dashboard</button>
+    <button onclick="testNotification()">
+  Test Notification
+</button>
   </div>
 
   <div class="card">
@@ -317,6 +320,11 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
   });
 }
 
+function testNotification() {
+  playLeadSound();
+  alert("🔥 Test notification working!");
+}
+    
     loadBusinessDashboard();
    function logout() {
 
