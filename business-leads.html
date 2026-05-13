@@ -147,6 +147,14 @@ h2 {
 .main-content {
   padding: 12px;
 }
+    .badge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 6px;
+}
   </style>
 </head>
 
@@ -155,7 +163,10 @@ h2 {
     <div class="sidebar">
       <h2>Divine Sleep</h2>
       <a href="/business-dashboard.html">Dashboard</a>
-      <a href="/business-leads.html">Leads</a>
+      <a href="/business-leads.html">
+  Leads
+  <span id="leadBadge" class="badge">0</span>
+</a>
       <a href="/business-affiliates.html">Affiliates</a>
       <a href="/business-analytics.html">Analytics</a>
       <a href="#">Settings</a>
@@ -206,6 +217,11 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
     let allLeads = [];
 
+    function updateLeadBadge() {
+  const newLeads = allLeads.filter(lead => lead.status === "new").length;
+  document.getElementById("leadBadge").innerText = newLeads;
+}
+
     async function loadLeads() {
       const businessId = loggedUser.business_id;
 
@@ -217,6 +233,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
       if (data.ok) {
         allLeads = data.leads || [];
+        updateLeadBadge();
         renderLeads();
       }
     }
