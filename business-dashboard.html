@@ -310,6 +310,9 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
   window.location.href = "/login.html";
 } 
+    setInterval(() => {
+    loadBusinessDashboard();
+}, 15000);
   </script>
       </div>
 
