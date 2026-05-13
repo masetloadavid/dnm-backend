@@ -336,12 +336,24 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
   toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
   toast.style.zIndex = "9999";
   toast.style.fontWeight = "bold";
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(-20px)";
+  toast.style.transition = "all 0.3s ease";
 
   document.body.appendChild(toast);
+     setTimeout(() => {
+  toast.style.opacity = "1";
+  toast.style.transform = "translateY(0)";
+}, 50); 
+
+  setTimeout(() => {
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(-20px)";
 
   setTimeout(() => {
     toast.remove();
-  }, 4000);
+  }, 300);
+}, 4000);
 }
     
 function testNotification() {
