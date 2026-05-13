@@ -237,6 +237,7 @@ h2 {
 
   <script>
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+    let previousLeadCount = 0;
 
     const loggedUser =
   JSON.parse(localStorage.getItem("logged_in_user") || "null");
@@ -266,6 +267,11 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
       if (summary.ok) {
         document.getElementById("totalLeads").innerText = summary.total;
+        if (summary.total > previousLeadCount && previousLeadCount !== 0) {
+    alert("🔥 New Lead Received!");
+}
+
+previousLeadCount = summary.total;
         document.getElementById("newLeads").innerText = summary.new;
         document.getElementById("leadBadge").innerText = summary.new || 0;
         document.getElementById("contactedLeads").innerText = summary.contacted;
