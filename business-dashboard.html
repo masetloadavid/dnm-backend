@@ -272,7 +272,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
         document.getElementById("totalLeads").innerText = summary.total;
         if (summary.total > previousLeadCount && previousLeadCount !== 0) {
     playLeadSound();
-    alert("🔥 New Lead Received!");
+    showToast("🔥 New Lead Received!");
 }
 
         previousLeadCount = summary.total;
@@ -320,9 +320,33 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
   });
 }
 
+    function showToast(message) {
+
+  const toast = document.createElement("div");
+
+  toast.innerText = message;
+
+  toast.style.position = "fixed";
+  toast.style.top = "20px";
+  toast.style.right = "20px";
+  toast.style.background = "#1e293b";
+  toast.style.color = "white";
+  toast.style.padding = "15px 20px";
+  toast.style.borderRadius = "12px";
+  toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+  toast.style.zIndex = "9999";
+  toast.style.fontWeight = "bold";
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 4000);
+}
+    
 function testNotification() {
   playLeadSound();
-  alert("🔥 Test notification working!");
+  showToast("🔥 Test notification working!");
 }
     
     loadBusinessDashboard();
