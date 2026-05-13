@@ -268,10 +268,11 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       if (summary.ok) {
         document.getElementById("totalLeads").innerText = summary.total;
         if (summary.total > previousLeadCount && previousLeadCount !== 0) {
+    playLeadSound();
     alert("🔥 New Lead Received!");
 }
 
-previousLeadCount = summary.total;
+        previousLeadCount = summary.total;
         document.getElementById("newLeads").innerText = summary.new;
         document.getElementById("leadBadge").innerText = summary.new || 0;
         document.getElementById("contactedLeads").innerText = summary.contacted;
@@ -305,6 +306,16 @@ previousLeadCount = summary.total;
 
     document.getElementById("businessName").innerText =
       "Business ID: " + loggedUser.business_id;
+
+    function playLeadSound() {
+  const audio = new Audio(
+    "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+  );
+
+  audio.play().catch(() => {
+    console.log("Sound blocked until user interacts with page.");
+  });
+}
 
     loadBusinessDashboard();
    function logout() {
