@@ -256,6 +256,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
     document.body.style.visibility = "visible";
 
     let allLeads = [];
+    let previousLeadCount = 0;
 
     function updateLeadBadge() {
   const newLeads = allLeads.filter(lead => lead.status === "new").length;
@@ -273,6 +274,11 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
       if (data.ok) {
         allLeads = data.leads || [];
+        if (previousLeadCount && data.length > previousLeadCount) {
+  showToast("🔥 New lead received!");
+}
+
+previousLeadCount = data.leads.length;
         updateLeadBadge();
         renderLeads();
       }
