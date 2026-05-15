@@ -239,6 +239,10 @@ h2 {
   </div>
 
   <script>
+    function playLeadSound() {
+  const audio = new Audio("/notification.mp3");
+  audio.play();
+}
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
     let previousLeadCount = 0;
 
