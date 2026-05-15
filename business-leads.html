@@ -80,6 +80,21 @@
       border-radius: 12px;
       margin-bottom: 14px;
     }
+    .new-lead-highlight {
+  animation: newLeadPulse 1.5s ease;
+  border: 2px solid #38bdf8;
+}
+
+@keyframes newLeadPulse {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
     .actions {
       margin-top: 10px;
@@ -257,6 +272,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
     let allLeads = [];
     let previousLeadCount = 0;
+    let knownLeadIds = [];
 
     function updateLeadBadge() {
   const newLeads = allLeads.filter(lead => lead.status === "new").length;
@@ -273,18 +289,27 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       const data = await res.json();
 
       if (data.ok) {
-        allLeads = data.leads || [];
-        if (previousLeadCount && data.length > previousLeadCount) {
+        const latestLeads = data.leads || [];
+
+const newLeads = latestLeads.filter(
+  lead => !knownLeadIds.includes(lead.id)
+);
+
+allLeads = latestLeads;
+
+if (knownLeadIds.length > 0 && newLeads.length > 0) {
   showToast("🔥 New lead received!");
 }
 
-previousLeadCount = data.leads.length;
-        updateLeadBadge();
-        renderLeads();
+knownLeadIds = latestLeads.map(lead => lead.id);
+previousLeadCount = latestLeads.length;
+
+updateLeadBadge();
+renderLeads(newLeads);
       }
     }
 
-    function renderLeads() {
+    function renderLeads(newLeads = []) {
       const search = document.getElementById("searchInput").value.toLowerCase();
       const status = document.getElementById("statusFilter").value;
 
@@ -310,7 +335,7 @@ previousLeadCount = data.leads.length;
       }
 
       container.innerHTML = filtered.map(lead => `
-        <div class="lead-card">
+        <div class="lead-card ${newLeads.some(n => n.id === lead.id) ? 'new-lead-highlight' : ''}">
           <h3>${lead.full_name || "No name"}</h3>
 
           <p><strong>Phone:</strong> ${lead.phone || ""}</p>
