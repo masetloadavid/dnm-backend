@@ -80,6 +80,38 @@
       border-radius: 12px;
       margin-bottom: 14px;
     }
+    .status-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-new {
+  background: #2563eb;
+  color: white;
+}
+
+.status-contacted {
+  background: #ea580c;
+  color: white;
+}
+
+.status-booked {
+  background: #16a34a;
+  color: white;
+}
+
+.status-paid {
+  background: #ca8a04;
+  color: white;
+}
+
+.status-cancelled {
+  background: #dc2626;
+  color: white;
+}
     .new-lead-highlight {
   animation: newLeadPulse 1.5s ease;
   border: 2px solid #38bdf8;
@@ -342,7 +374,13 @@ renderLeads(newLeads);
           <p><strong>Email:</strong> ${lead.email || ""}</p>
           <p><strong>Referral Code:</strong> ${lead.referral_code || ""}</p>
           <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-          <p><strong>Status:</strong> <span id="status-text-${lead.id}">${lead.status}</span></p>
+          <p>
+  <strong>Status:</strong>
+
+  <span class="status-badge status-${lead.status}">
+    ${lead.status}
+  </span>
+</p>
           <p><strong>Created:</strong> ${lead.created_at}</p>
 
           <div class="actions">
