@@ -277,6 +277,9 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
         if (summary.total > previousLeadCount && previousLeadCount !== 0) {
     playLeadSound();
     showToast("🔥 New Lead Received!");
+          if ("vibrate" in navigator) {
+  navigator.vibrate(300);
+}
 }
 
         previousLeadCount = summary.total;
@@ -363,6 +366,9 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 function testNotification() {
   playLeadSound();
   showToast("🔥 Test notification working!");
+  if ("vibrate" in navigator) {
+  navigator.vibrate(300);
+}
 }
     
     loadBusinessDashboard();
