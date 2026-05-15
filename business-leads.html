@@ -322,6 +322,19 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
       if (data.ok) {
         const latestLeads = data.leads || [];
+       latestLeads.sort((a, b) => {
+
+  const priority = {
+    new: 1,
+    contacted: 2,
+    booked: 3,
+    paid: 4,
+    cancelled: 5
+  };
+
+  return priority[a.status] - priority[b.status];
+
+}); 
 
 const newLeads = latestLeads.filter(
   lead => !knownLeadIds.includes(lead.id)
