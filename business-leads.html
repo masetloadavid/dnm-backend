@@ -415,6 +415,19 @@ renderLeads(newLeads);
       `).join("");
     }
 
+    function saveActivity(message) {
+  let activities = JSON.parse(localStorage.getItem("recent_activities") || "[]");
+
+  activities.unshift({
+    text: message,
+    time: new Date().toLocaleTimeString()
+  });
+
+  activities = activities.slice(0, 10);
+
+  localStorage.setItem("recent_activities", JSON.stringify(activities));
+}
+
     async function updateLeadStatus(leadId) {
       const newStatus = document.getElementById("status-" + leadId).value;
 
