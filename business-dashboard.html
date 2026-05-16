@@ -262,7 +262,7 @@ h2 {
 }
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
     let previousLeadCount = 0;
-    let recentActivities = [];
+    let recentActivities = JSON.parse(localStorage.getItem("recent_activities") || "[]");
 
     const loggedUser =
   JSON.parse(localStorage.getItem("logged_in_user") || "null");
@@ -278,6 +278,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
     document.body.style.visibility = "visible";
 
     async function loadBusinessDashboard() {
+      renderActivities();
       const businessId = loggedUser.business_id;
 
       const [summaryRes, leadsRes, payoutsRes] = await Promise.all([
@@ -391,6 +392,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
   });
 
   recentActivities = recentActivities.slice(0, 10);
+  localStorage.setItem("recent_activities", JSON.stringify(recentActivities)); 
 
   const feed = document.getElementById("activityFeed");
 
