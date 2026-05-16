@@ -178,6 +178,17 @@ h2 {
 
       <div class="card">
         <h2>Key Metrics</h2>
+        <div class="card">
+  <h2>Lead Pipeline</h2>
+
+  <div class="grid">
+    <div class="box">New<br><strong id="newLeads">0</strong></div>
+    <div class="box">Contacted<br><strong id="contactedLeads">0</strong></div>
+    <div class="box">Booked<br><strong id="bookedLeads">0</strong></div>
+    <div class="box">Paid<br><strong id="paidLeads">0</strong></div>
+    <div class="box">Cancelled<br><strong id="cancelledLeads">0</strong></div>
+  </div>
+</div>
         <div class="grid">
           <div class="box">Total Leads<br><strong id="totalLeads">0</strong></div>
           <div class="box">Booked/Paid Leads<br><strong id="earningLeads">0</strong></div>
@@ -241,6 +252,19 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       const data = await res.json();
 
       const affiliates = data.affiliates || [];
+      const leadsRes = await fetch(
+  BASE_URL + "/api/admin/lead-summary?business_id=" + businessId
+);
+
+const leadSummary = await leadsRes.json();
+
+if (leadSummary.ok) {
+  document.getElementById("newLeads").innerText = leadSummary.new || 0;
+  document.getElementById("contactedLeads").innerText = leadSummary.contacted || 0;
+  document.getElementById("bookedLeads").innerText = leadSummary.booked || 0;
+  document.getElementById("paidLeads").innerText = leadSummary.paid || 0;
+  document.getElementById("cancelledLeads").innerText = leadSummary.cancelled || 0;
+}
 
       const totalLeads = affiliates.reduce((sum, a) => sum + Number(a.total_leads || 0), 0);
       const earningLeads = affiliates.reduce((sum, a) => sum + Number(a.earning_leads || 0), 0);
