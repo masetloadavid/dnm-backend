@@ -434,6 +434,7 @@ renderLeads(newLeads);
       const data = await res.json();
 
       if (data.ok) {
+        addActivity("✅ Lead status updated to " + status);
         loadLeads();
       } else {
         alert("Failed to update lead status");
