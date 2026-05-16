@@ -227,7 +227,13 @@ h2 {
       <div class="box">Cancelled<br><strong id="cancelledLeads">0</strong></div>
     </div>
   </div>
+    
+<div class="card">
+  <h2>Live Activity</h2>
 
+  <div id="activityFeed"></div>
+</div>
+    
   <div class="card">
     <h2>Affiliate Performance</h2>
     <pre id="affiliatePerformance"></pre>
@@ -245,6 +251,7 @@ h2 {
 }
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
     let previousLeadCount = 0;
+    let recentActivities = [];
 
     const loggedUser =
   JSON.parse(localStorage.getItem("logged_in_user") || "null");
@@ -277,6 +284,8 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
         if (summary.total > previousLeadCount && previousLeadCount !== 0) {
     playLeadSound();
     showToast("🔥 New Lead Received!");
+    addActivity("🔥 New lead received");
+          
           if ("vibrate" in navigator) {
   navigator.vibrate(300);
 }
@@ -361,6 +370,25 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
     toast.remove();
   }, 300);
 }, 4000);
+}
+
+    function addActivity(message) {
+
+  recentActivities.unshift({
+    text: message,
+    time: new Date().toLocaleTimeString()
+  });
+
+  recentActivities = recentActivities.slice(0, 10);
+
+  const feed = document.getElementById("activityFeed");
+
+  feed.innerHTML = recentActivities.map(activity => `
+    <div class="activity-item">
+      <div>${activity.text}</div>
+      <small>${activity.time}</small>
+    </div>
+  `).join("");
 }
     
 function testNotification() {
