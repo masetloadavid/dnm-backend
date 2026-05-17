@@ -278,7 +278,6 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
     document.body.style.visibility = "visible";
 
     async function loadBusinessDashboard() {
-      renderActivities();
       const businessId = loggedUser.business_id;
 
       const [summaryRes, leadsRes, payoutsRes] = await Promise.all([
