@@ -460,7 +460,7 @@ renderLeads(newLeads);
       const data = await res.json();
 
       if (data.ok) {
-  // saveActivity("✅ Lead status updated to " + newStatus);
+  saveActivity("✅ Lead status updated to " + newStatus);
   showToast("✅ Status updated to " + newStatus);
   loadLeads();
 }
