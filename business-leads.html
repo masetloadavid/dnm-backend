@@ -460,7 +460,6 @@ renderLeads(newLeads);
       const data = await res.json();
 
       if (data.ok) {
-  saveActivity("✅ Lead status updated to " + newStatus);
   loadLeads();
 }
       } else {
