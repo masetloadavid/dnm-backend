@@ -421,7 +421,10 @@ function testNotification() {
 
   window.location.href = "/login.html";
 } 
-    setInterval(() => {
+  loadBusinessDashboard();
+  renderActivities();
+    
+  setInterval(() => {
     loadBusinessDashboard();
     renderActivities();
 }, 15000);
