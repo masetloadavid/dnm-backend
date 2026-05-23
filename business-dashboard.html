@@ -326,7 +326,7 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
 
       const affiliateBox = document.getElementById("affiliatePerformance");
 
-affiliateBox.innerHTML = (affiliatesData.affiliates || []).map(a => `
+affiliateBox.innerHTML = (affiliatesData.payouts || affiliatesData.affiliates || []).map(a => `
   <div class="affiliate-card">
     <h3>${a.referral_code}</h3>
     <p><strong>Total Leads:</strong> ${a.total_leads}</p>
