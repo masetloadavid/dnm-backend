@@ -325,8 +325,13 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       }
 
       const affiliateBox = document.getElementById("affiliatePerformance");
+      const affiliateList = affiliatesData.payouts || affiliatesData.affiliates || [];
 
-affiliateBox.innerHTML = (affiliatesData.payouts || affiliatesData.affiliates || []).map(a => `
+if (affiliateList.length === 0) {
+  affiliateBox.innerHTML = "<p>No affiliate performance data found.</p>";
+}
+
+affiliateBox.innerHTML = affiliateList.map(a => `
   <div class="affiliate-card">
     <h3>${a.referral_code}</h3>
     <p><strong>Total Leads:</strong> ${a.total_leads}</p>
