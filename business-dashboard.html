@@ -515,7 +515,14 @@ function testNotification() {
 }
     
     loadBusinessDashboard();
-   function logout() {
+renderActivities();
+
+setInterval(() => {
+  loadBusinessDashboard();
+  renderActivities();
+}, 5000);
+
+function logout() {
 
   localStorage.removeItem("logged_in_user");
   localStorage.removeItem("affiliate_code");
@@ -524,13 +531,7 @@ function testNotification() {
 
   window.location.href = "/login.html";
 } 
-  loadBusinessDashboard();
-  renderActivities();
-    
-  setInterval(() => {
-    loadBusinessDashboard();
-    renderActivities();
-}, 10000);
+  
   </script>
       </div>
 
