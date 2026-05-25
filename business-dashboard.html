@@ -44,6 +44,15 @@
       font-weight: bold;
       cursor: pointer;
     }
+    .quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quick-actions button {
+  width: 100%;
+}
 
     pre {
       background: #020617;
@@ -239,7 +248,7 @@ h2 {
 </button> 
 
   </div>
-    <div class="card">
+    <div class="card quick-actions">
   <h2>Quick Actions</h2>
 
   <button onclick="window.location.href='/business-leads.html'">
