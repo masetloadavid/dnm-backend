@@ -305,7 +305,7 @@ h2 {
   </div>
     <div class="card quick-actions">
   <h2>Quick Actions</h2>
-     <button onclick="loadBusinessDashboard(); renderActivities(); showToast('🔄 Dashboard refreshed');">
+     <button onclick="refreshDashboard()">
   🔄 Refresh Dashboard
 </button>
 
@@ -524,7 +524,13 @@ setInterval(() => {
   loadBusinessDashboard();
   renderActivities();
 }, 5000);
-
+    
+function refreshDashboard() {
+  loadBusinessDashboard();
+  renderActivities();
+  showToast("🔄 Dashboard refreshed");
+}
+    
 function logout() {
 
   localStorage.removeItem("logged_in_user");
