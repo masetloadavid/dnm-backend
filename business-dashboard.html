@@ -44,6 +44,23 @@
       font-weight: bold;
       cursor: pointer;
     }
+    
+    .card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+    
     .quick-actions {
   display: flex;
   flex-direction: column;
