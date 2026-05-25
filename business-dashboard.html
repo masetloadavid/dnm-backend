@@ -367,9 +367,9 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
       const businessId = loggedUser.business_id;
 
       const [summaryRes, leadsRes, payoutsRes] = await Promise.all([
-        fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId),
-        fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId),
-        fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId)
+       fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId + "&t=" + Date.now())
+       fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId + "&t=" + Date.now())
+       fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId + "&t=" + Date.now()) 
       ]);
 
       const summary = await summaryRes.json();
