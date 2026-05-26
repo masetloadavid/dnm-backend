@@ -68,6 +68,10 @@
 
       if (data.ok) {
   localStorage.setItem("affiliate_code", data.affiliate.referral_code);
+  localStorage.setItem("is_logged_in", "true");
+  localStorage.setItem("user_role", "affiliate");
+  localStorage.setItem("logged_in_user", JSON.stringify(data.user));
+
   window.location.href = "/affiliate-dashboard.html";
 }
 
