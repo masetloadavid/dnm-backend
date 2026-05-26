@@ -148,6 +148,7 @@ if (ref) {
 
   async function loadAffiliate() {
     const code = localStorage.getItem("affiliate_code");
+    alert(Affiliate code is: " + code);
 
     const [leadRes, payoutRes] = await Promise.all([
       fetch(BASE_URL + "/api/affiliate/" + code + "/leads"),
