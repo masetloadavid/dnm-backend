@@ -67,8 +67,9 @@
       const data = await res.json();
 
       if (data.ok) {
-        localStorage.setItem("affiliate_code", data.affiliate.referral_code);
-      }
+  localStorage.setItem("affiliate_code", data.affiliate.referral_code);
+  window.location.href = "/affiliate-dashboard.html";
+}
 
       document.getElementById("output").innerText =
         JSON.stringify(data, null, 2);
