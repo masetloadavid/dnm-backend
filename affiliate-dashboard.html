@@ -150,7 +150,7 @@ if (ref) {
     const code = localStorage.getItem("affiliate_code");
 
 document.getElementById("affiliateInfo").innerText =
-  "Affiliate Code: " + code;
+  "Affiliate Code: " + code + " | Loading data...";
 
     const [leadRes, payoutRes] = await Promise.all([
       fetch(BASE_URL + "/api/affiliate/" + code + "/leads"),
@@ -159,6 +159,9 @@ document.getElementById("affiliateInfo").innerText =
 
     const leadData = await leadRes.json();
     const payoutData = await payoutRes.json();
+
+    document.getElementById("payoutHistory").innerText =
+  JSON.stringify({ leadData, payoutData }, null, 2);
 
     if (!leadData.ok) {
   document.getElementById("affiliateInfo").innerText =
