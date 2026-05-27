@@ -152,6 +152,8 @@ alert("Using code: " + code);
     const leadData = await leadRes.json();
     const payoutData = await payoutRes.json();
 
+    alert(JSON.stringify(leadData));
+
     document.getElementById("payoutHistory").innerText =
   JSON.stringify({ leadData, payoutData }, null, 2);
 
