@@ -192,7 +192,7 @@ document.getElementById("affiliateInfo").innerText =
       payoutData.balance_due ?? 0;
 
     document.getElementById("payoutHistory").innerText =
-      JSON.stringify(payoutData.payout_history ?? [], null, 2);
+  JSON.stringify({ leadData, payoutData }, null, 2);
 
     renderLeads(leadData.leads || [], code);
   }
