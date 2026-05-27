@@ -161,13 +161,13 @@ document.getElementById("affiliateInfo").innerText =
     const payoutData = await payoutRes.json();
 
     if (!leadData.ok) {
-      document.getElementById("affiliateInfo").innerText =
-        JSON.stringify(leadData, null, 2);
-      return;
-    }
+  document.getElementById("affiliateInfo").innerText =
+    "Affiliate Code: " + code;
+  return;
+}
 
     document.getElementById("affiliateInfo").innerText =
-      JSON.stringify(leadData.affiliate, null, 2);
+  "Affiliate Code: " + code;
 
     document.getElementById("totalLeads").innerText =
       leadData.total_leads ?? 0;
