@@ -150,7 +150,9 @@ if (ref) {
     const code = localStorage.getItem("affiliate_code");
 
 document.getElementById("affiliateInfo").innerText =
-  "Affiliate Code: " + code + " | Loading data...";
+  "Affiliate Code: " + code;
+
+alert("Using code: " + code);
 
     const [leadRes, payoutRes] = await Promise.all([
       fetch(BASE_URL + "/api/affiliate/" + code + "/leads"),
