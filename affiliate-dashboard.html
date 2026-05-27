@@ -134,17 +134,7 @@ const params = new URLSearchParams(window.location.search);
 const ref = params.get("code");
 const savedCode = localStorage.getItem("affiliate_code");
 
-// Priority:
-// 1. URL code (?code=AFF001)
-// 2. saved login code
-
-if (ref) {
-  document.getElementById("code").value = ref;
-  loadAffiliate();
-} else if (savedCode) {
-  document.getElementById("code").value = savedCode;
-  loadAffiliate();
-}
+loadAffiliate();
 
   async function loadAffiliate() {
     const code = localStorage.getItem("affiliate_code");
