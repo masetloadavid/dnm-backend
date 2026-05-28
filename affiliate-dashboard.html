@@ -142,8 +142,6 @@ loadAffiliate();
 document.getElementById("affiliateInfo").innerText =
   "Affiliate Code: " + code;
 
-alert("Using code: " + code);
-
     const [leadRes, payoutRes] = await Promise.all([
       fetch(BASE_URL + "/api/affiliate/" + code + "/leads"),
       fetch(BASE_URL + "/api/affiliate/" + code + "/payouts")
@@ -186,7 +184,7 @@ alert("Using code: " + code);
       payoutData.balance_due ?? 0;
 
     document.getElementById("payoutHistory").innerText =
-  JSON.stringify({ leadData, payoutData }, null, 2);
+  JSON.stringify(payoutData.payout_history ?? [], null, 2);
 
     renderLeads(leadData.leads || [], code);
   }
