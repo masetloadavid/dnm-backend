@@ -59,7 +59,7 @@
 <body>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-  <h1>Affiliate Dashboard TEST</h1>
+  <h1>Affiliate Dashboard</h1>
 
   <button onclick="logout()">
     Logout
@@ -149,8 +149,6 @@ document.getElementById("affiliateInfo").innerText =
 
     const leadData = await leadRes.json();
     const payoutData = await payoutRes.json();
-
-    alert(JSON.stringify(leadData));
 
     document.getElementById("payoutHistory").innerText =
   JSON.stringify({ leadData, payoutData }, null, 2);
