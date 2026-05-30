@@ -181,8 +181,18 @@ document.getElementById("affiliateInfo").innerText =
     document.getElementById("balanceDue").innerText =
       payoutData.balance_due ?? 0;
 
-    document.getElementById("payoutHistory").innerText =
-  JSON.stringify(payoutData.payout_history ?? [], null, 2);
+    const payouts = payoutData.payout_history ?? [];
+
+document.getElementById("payoutHistory").innerHTML =
+  payouts.length === 0
+    ? "<p>No payout history yet.</p>"
+    : payouts.map(p => `
+        <div class="lead-card">
+          <p><strong>Amount:</strong> R ${p.amount}</p>
+          <p><strong>Status:</strong> ${p.status}</p>
+          <p><strong>Date:</strong> ${p.created_at}</p>
+        </div>
+      `).join("");
 
     renderLeads(leadData.leads || [], code);
   }
