@@ -47,6 +47,18 @@
     <button onclick="loadAdminPayouts()">Load Affiliate Payout Summary</button>
   </div>
 
+<div class="card">
+  <h2>Create Payout</h2>
+
+  <input id="payoutCode" placeholder="Affiliate Code e.g. AFF002">
+  <input id="payoutAmount" placeholder="Amount e.g. 360">
+  <input id="payoutNotes" placeholder="Notes e.g. May payout">
+
+  <button onclick="createPayout()">Create Payout</button>
+
+  <pre id="createPayoutResult"></pre>
+</div>
+  
   <div class="card">
     <h2>Affiliate Summaries</h2>
     <div id="affiliateSummaries"></div>
@@ -63,6 +75,28 @@
 
   <script>
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
+
+    async function createPayout() {
+  const code = document.getElementById("payoutCode").value.trim();
+  const amount = document.getElementById("payoutAmount").value.trim();
+  const notes = document.getElementById("payoutNotes").value.trim();
+
+  const res = await fetch(BASE_URL + "/api/affiliate/" + code + "/payouts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ amount, notes })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("createPayoutResult").innerText =
+    JSON.stringify(data, null, 2);
+
+  loadAdminPayouts();
+  loadPayoutHistory();
+}
 
     async function loadAdminPayouts() {
       const res = await fetch(BASE_URL + "/api/admin/payouts");
