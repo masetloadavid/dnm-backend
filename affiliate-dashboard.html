@@ -243,6 +243,10 @@ function renderChart(data) {
 
     return searchable.includes(search);
 });
+    if (!leads.length) {
+  container.innerHTML = "<p>No matching leads found.</p>";
+  return;
+}
     container.innerHTML = leads.map(lead => `
       <div style="background:#020617; padding:15px; border-radius:10px; margin-bottom:15px;">
         <p><strong>ID:</strong> ${lead.id}</p>
