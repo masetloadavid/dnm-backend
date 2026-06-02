@@ -1012,7 +1012,7 @@ app.get("/api/affiliate/:code/payouts", async (req, res) => {
 
     const businessResult = await query(
   `SELECT commission_per_lead FROM businesses WHERE id = $1 LIMIT 1`,
-  [businessId]
+  [affiliate.business_id || 1]
 );
 
 const commissionPerLead =
