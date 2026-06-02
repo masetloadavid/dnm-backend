@@ -237,11 +237,12 @@ function renderChart(data) {
       container.innerHTML = "<p>No leads found.</p>";
       return;
     }
-    leads = leads.filter(lead =>
-    (lead.full_name || "").toLowerCase().includes(search) ||
-    (lead.phone || "").toLowerCase().includes(search) ||
-    (lead.status || "").toLowerCase().includes(search)
-);
+    leads = leads.filter(lead => {
+    const searchable =
+        `${lead.full_name || ""} ${lead.phone || ""} ${lead.status || ""}`.toLowerCase();
+
+    return searchable.includes(search);
+});
     container.innerHTML = leads.map(lead => `
       <div style="background:#020617; padding:15px; border-radius:10px; margin-bottom:15px;">
         <p><strong>ID:</strong> ${lead.id}</p>
