@@ -111,6 +111,7 @@
 
 <div class="card">
   <h2>Leads</h2>
+  <input id="leadSearch" placeholder="Search by name, phone, or status" oninput="filterLeads()">
   <div id="leadsOutput"></div>
 </div>
   
@@ -194,7 +195,8 @@ document.getElementById("payoutHistory").innerHTML =
         </div>
       `).join("");
 
-    renderLeads(leadData.leads || [], code);
+    allAffiliateLeads = leadData.leads || [];
+renderLeads(allAffiliateLeads, code);
   }
   
 function renderChart(data) {
@@ -227,6 +229,21 @@ function renderChart(data) {
     </div>
   `;
 }
+
+let allAffiliateLeads = [];
+
+function filterLeads() {
+  const search = document.getElementById("leadSearch").value.toLowerCase();
+
+  const filtered = allAffiliateLeads.filter(lead =>
+    (lead.full_name || "").toLowerCase().includes(search) ||
+    (lead.phone || "").toLowerCase().includes(search) ||
+    (lead.status || "").toLowerCase().includes(search)
+  );
+
+  renderLeads(filtered, localStorage.getItem("affiliate_code"));
+
+  
   function renderLeads(leads, code) {
     const container = document.getElementById("leadsOutput");
 
