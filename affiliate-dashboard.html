@@ -239,12 +239,23 @@ function renderChart(data) {
       container.innerHTML = "<p>No leads found.</p>";
       return;
     }
-    leads = leads.filter(lead => {
-    const searchable =
-        `${lead.full_name || ""} ${lead.phone || ""} ${lead.status || ""}`.toLowerCase();
 
-    return searchable.includes(search);
+   const startDate = document.getElementById("startDate")?.value || "";
+   const endDate = document.getElementById("endDate")?.value || ""; 
+    
+    leads = leads.filter(lead => {
+  const searchable =
+    `${lead.full_name || ""} ${lead.phone || ""} ${lead.status || ""}`.toLowerCase();
+
+  const leadDate = (lead.created_at || "").slice(0, 10);
+
+  const matchesSearch = searchable.includes(search);
+  const matchesStart = !startDate || leadDate >= startDate;
+  const matchesEnd = !endDate || leadDate <= endDate;
+
+  return matchesSearch && matchesStart && matchesEnd;
 });
+    
     if (!leads.length) {
   container.innerHTML = "<p>No matching leads found.</p>";
   return;
