@@ -182,14 +182,14 @@ document.getElementById("affiliateInfo").innerText =
       payoutData.balance_due ?? 0;
 
     const payouts = payoutData.payout_history ?? [];
-alert(JSON.stringify(payoutData));
+
 document.getElementById("payoutHistory").innerHTML =
   payouts.length === 0
     ? "<p>No payout history yet.</p>"
     : payouts.map(p => `
         <div class="lead-card">
           <p><strong>Amount:</strong> R ${p.amount}</p>
-          <p><strong>Status:</strong> ${p.status}</p>
+          <p><strong>Notes:</strong> ${p.notes || "Paid"}</p>
           <p><strong>Date:</strong> ${p.created_at}</p>
         </div>
       `).join("");
