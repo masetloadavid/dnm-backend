@@ -182,7 +182,7 @@ document.getElementById("affiliateInfo").innerText =
       payoutData.balance_due ?? 0;
 
     const payouts = payoutData.payout_history ?? [];
-
+alert(JSON.stringify(payoutData));
 document.getElementById("payoutHistory").innerHTML =
   payouts.length === 0
     ? "<p>No payout history yet.</p>"
