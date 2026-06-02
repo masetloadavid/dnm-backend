@@ -195,8 +195,7 @@ document.getElementById("payoutHistory").innerHTML =
         </div>
       `).join("");
 
-    allAffiliateLeads = leadData.leads || [];
-renderLeads(allAffiliateLeads, code);
+   renderLeads(leadData.leads || [], code);
   }
   
 function renderChart(data) {
@@ -229,21 +228,7 @@ function renderChart(data) {
     </div>
   `;
 }
-
-let allAffiliateLeads = [];
-
-function filterLeads() {
-  const search = document.getElementById("leadSearch").value.toLowerCase();
-
-  const filtered = allAffiliateLeads.filter(lead =>
-    (lead.full_name || "").toLowerCase().includes(search) ||
-    (lead.phone || "").toLowerCase().includes(search) ||
-    (lead.status || "").toLowerCase().includes(search)
-  );
-
-  renderLeads(filtered, localStorage.getItem("affiliate_code"));
-
-  
+ 
   function renderLeads(leads, code) {
     const container = document.getElementById("leadsOutput");
 
