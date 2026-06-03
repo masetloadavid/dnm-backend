@@ -50,6 +50,11 @@
     margin-top: 10px;
     color: #38bdf8;
 }
+    .box span {
+  display: block;
+  font-size: 15px;
+  line-height: 1.2;
+}
 
 .box:hover {
     transform: scale(1.03);
@@ -322,27 +327,36 @@ h2 {
   <div class="card">
     <h2>Lead Summary</h2>
     <div class="summary">
-      <div class="box">📊 Total<br><strong id="totalLeads">0</strong></div>
-      <div class="box">🆕 New<br><strong id="newLeads">0</strong></div>
       <div class="box">
-📞 Contacted
+<span>📊 Total</span>
+<strong id="totalLeads">0</strong>
+</div>
+
+<div class="box">
+<span>🆕 New</span>
+<strong id="newLeads">0</strong>
+</div>
+
+<div class="box">
+<span>📞 Contacted</span>
 <strong id="contactedLeads">0</strong>
 </div>
 
 <div class="box">
-📅 Booked
+<span>📅 Booked</span>
 <strong id="bookedLeads">0</strong>
 </div>
 
 <div class="box">
-💵 Paid
+<span>💵 Paid</span>
 <strong id="paidLeads">0</strong>
 </div>
 
 <div class="box">
-❌ Cancelled
+<span>❌ Cancelled</span>
 <strong id="cancelledLeads">0</strong>
 </div>
+      
   </div>
     
 <div class="card">
@@ -360,7 +374,7 @@ h2 {
     function playLeadSound() {
   const audio = new Audio("/notification.mp3");
   audio.play();
-}
+
     const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
     let previousLeadCount = 0;
     let recentActivities = JSON.parse(localStorage.getItem("recent_activities") || "[]");
