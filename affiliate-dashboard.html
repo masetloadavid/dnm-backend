@@ -279,6 +279,25 @@ function renderChart(data) {
   container.innerHTML = "<p>No matching leads found.</p>";
   return;
 }
+    const sortType = document.getElementById("leadSort")?.value || "newest";
+
+if (sortType === "newest") {
+  leads.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+}
+
+if (sortType === "oldest") {
+  leads.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+}
+
+if (sortType === "status") {
+  leads.sort((a, b) => (a.status || "").localeCompare(b.status || ""));
+}
+
+if (sortType === "name") {
+  leads.sort((a, b) =>
+    (a.full_name || "").localeCompare(b.full_name || "")
+  );
+}
     container.innerHTML = leads.map(lead => `
       <div style="background:#020617; padding:15px; border-radius:10px; margin-bottom:15px;">
         <p><strong>ID:</strong> ${lead.id}</p>
