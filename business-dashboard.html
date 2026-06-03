@@ -435,16 +435,16 @@ if (affiliateList.length === 0) {
 }
 
 affiliateBox.innerHTML = affiliateList.map(a => `
-  <div class="affiliate-card">
-    <h3>${a.referral_code}</h3>
-    <p><strong>Total Leads:</strong> ${a.total_leads}</p>
-    <p><strong>Total Clicks:</strong> ${a.total_clicks}</p>
-    <p><strong>Conversion:</strong> ${a.conversion_rate}%</p>
-    <p><strong>Booked/Paid:</strong> ${a.earning_leads}</p>
-    <p><strong>Total Earned:</strong> R ${a.total_earned}</p>
-    <p><strong>Total Paid:</strong> R ${a.total_paid}</p>
-    <p><strong>Balance Due:</strong> R ${a.balance_due}</p>
-  </div>
+    <div class="affiliate-card">
+        <h3>${a.referral_code}</h3>
+        <p><strong>Total Leads:</strong> ${a.total_leads}</p>
+        <p><strong>Total Clicks:</strong> ${a.total_clicks}</p>
+        <p><strong>Conversion:</strong> ${a.conversion_rate}%</p>
+        <p><strong>Booked/Paid:</strong> ${a.earning_leads}</p>
+        <p><strong>Total Earned:</strong> R ${a.total_earned}</p>
+        <p><strong>Total Paid:</strong> R ${a.total_paid}</p>
+        <p><strong>Balance Due:</strong> R ${a.balance_due}</p>
+    </div>
 `).join("");
 
       const leadsContainer = document.getElementById("leadsContainer");
