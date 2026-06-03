@@ -112,8 +112,17 @@
 <div class="card">
   <h2>Leads</h2>
   <input id="leadSearch" placeholder="Search by name, phone, or status" oninput="loadAffiliate()">
-  <input id="startDate" type="date" onchange="loadAffiliate()">
-  <input id="endDate" type="date" onchange="loadAffiliate()">
+  <div style="display:flex; gap:8px; margin-top:10px;">
+  <div>
+    <label style="display:block; font-size:12px; margin-bottom:4px;">From date</label>
+    <input id="startDate" type="date" onchange="loadAffiliate()">
+  </div>
+
+  <div>
+    <label style="display:block; font-size:12px; margin-bottom:4px;">To date</label>
+    <input id="endDate" type="date" onchange="loadAffiliate()">
+  </div>
+</div>
   <div id="leadsOutput"></div>
 </div>
   
