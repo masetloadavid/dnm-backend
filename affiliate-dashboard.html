@@ -123,6 +123,16 @@
     <input id="endDate" type="date" onchange="loadAffiliate()">
   </div>
 </div>
+  <label style="display:block; font-size:12px; margin-top:10px; margin-bottom:4px;">
+  Sort leads
+</label>
+
+<select id="leadSort" onchange="loadAffiliate()">
+  <option value="newest">Newest first</option>
+  <option value="oldest">Oldest first</option>
+  <option value="status">Status</option>
+  <option value="name">Name A-Z</option>
+</select>
   <div id="leadsOutput"></div>
 </div>
   
