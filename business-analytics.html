@@ -18,6 +18,21 @@
       margin: 0;
     }
 
+    html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
     .app-layout {
       display: flex;
       min-height: 100vh;
@@ -127,8 +142,10 @@
 }
 
   .main-content {
-    padding: 15px;
-  }
+  padding: 15px;
+  width: 100%;
+  max-width: 100%;
+}
 
 }
     body {
