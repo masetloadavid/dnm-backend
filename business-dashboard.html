@@ -439,7 +439,7 @@ affiliateBox.innerHTML = "test";
       const leadsContainer = document.getElementById("leadsContainer");
 
       if (leadsData.ok && leadsData.leads.length > 0) {
-        leadsContainer.innerHTML = leadsData.leads.map(lead => `
+        leadsContainer.innerHTML = "test leads";
           <div class="lead-card">
             <p><strong>ID:</strong> ${lead.id}</p>
             <p><strong>Referral Code:</strong> ${lead.referral_code || ""}</p>
