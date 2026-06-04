@@ -394,71 +394,9 @@ if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
     document.body.style.visibility = "visible";
 
     async function loadBusinessDashboard() {
-      const businessId = loggedUser.business_id;
-
-      const [summaryRes, leadsRes, payoutsRes] = await Promise.all([
-       fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId + "&t=" + Date.now()),
-fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId + "&t=" + Date.now()),
-fetch(BASE_URL + "/api/admin/payouts?business_id=" + businessId + "&t=" + Date.now())
-      ]);
-
-      const summary = await summaryRes.json();
-      const leadsData = await leadsRes.json();
-      const payoutsData = await payoutsRes.json();
-
-      if (summary.ok) {
-        document.getElementById("totalLeads").innerText = summary.total;
-        if (summary.total > previousLeadCount && previousLeadCount !== 0) {
-    playLeadSound();
-    showToast("🔥 New Lead Received!");
-    addActivity("🔥 New lead received");
-          
-          if ("vibrate" in navigator) {
-  navigator.vibrate(300);
+      console.log("Dashboard loading");
 }
-}
-
-        previousLeadCount = summary.total;
-        document.getElementById("newLeads").innerText = summary.new;
-        document.getElementById("leadBadge").innerText = summary.new || 0;
-        document.getElementById("contactedLeads").innerText = summary.contacted;
-        document.getElementById("bookedLeads").innerText = summary.booked;
-        document.getElementById("paidLeads").innerText = summary.paid;
-        document.getElementById("cancelledLeads").innerText = summary.cancelled;
-      }
-
-      const affiliateBox = document.getElementById("affiliatePerformance");
-      const affiliateList = affiliatesData.payouts || affiliatesData.affiliates || [];
-
-if (affiliateList.length === 0) {
-  affiliateBox.innerHTML = "<p>No affiliate performance data found.</p>";
-}
-
-affiliateBox.innerHTML = "test";
-
-      const leadsContainer = document.getElementById("leadsContainer");
-
-      if (leadsData.ok && leadsData.leads.length > 0) {
-        leadsContainer.innerHTML = "test leads";
-          <div class="lead-card">
-            <p><strong>ID:</strong> ${lead.id}</p>
-            <p><strong>Referral Code:</strong> ${lead.referral_code || ""}</p>
-            <p><strong>Name:</strong> ${lead.full_name}</p>
-            <p><strong>Phone:</strong> ${lead.phone}</p>
-            <p><strong>Email:</strong> ${lead.email || ""}</p>
-            <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-            <p><strong>Status:</strong> ${lead.status}</p>
-            <p><strong>Created:</strong> ${lead.created_at}</p>
-          </div>
-        `).join("");
-      } else {
-        leadsContainer.innerHTML = "<p>No leads found.</p>";
-      }
-    }
-
-    document.getElementById("businessName").innerText =
-      "Business ID: " + loggedUser.business_id;
-
+     
     function playLeadSound() {
   const audio = new Audio(
     "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
