@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Business Owner Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Divine Sleep">
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0f172a">
+  <title>Business Dashboard</title>
   <style>
     body {
       visibility: hidden;
@@ -26,40 +20,29 @@
 
     .summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
     }
 
     .box {
       background: #020617;
       padding: 18px;
       border-radius: 14px;
-      font-size: 15px;
       font-weight: bold;
-      transition: 0.25s ease;
-      overflow: hidden;
       min-height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .box strong {
-    display: block;
-    font-size: 32px;
-    margin-top: 10px;
-    color: #38bdf8;
-}
     .box span {
-  display: block;
-  font-size: 15px;
-  line-height: 1.2;
-}
+      font-size: 16px;
+    }
 
-.box:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 16px rgba(56,189,248,0.25);
-}
+    .box strong {
+      font-size: 34px;
+      color: #38bdf8;
+    }
 
     button {
       background: #38bdf8;
@@ -68,433 +51,245 @@
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
+      margin: 5px;
     }
 
-    .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-}
-
-.quick-actions button:hover {
-  box-shadow: 0 0 18px rgba(56,189,248,0.45);
-}
-    
-button {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:active {
-  transform: scale(0.97);
-}
-    
-    .quick-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.quick-actions button {
-  width: 100%;
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
-  font-size: 16px;
-  padding: 14px;
-}
-
-    pre {
-      background: #020617;
-      padding: 15px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      overflow-x: auto;
+    input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin: 5px;
     }
 
     .lead-card {
       background: #020617;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 12px;
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
     }
-    .app-layout {
-  display: flex;
-  min-height: 100vh;
-}
 
-.sidebar {
-  width: 240px;
-  background: #020617;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
-.sidebar h2 {
-  color: #38bdf8;
-}
+    .status-new { background: #334155; }
+    .status-contacted { background: #2563eb; }
+    .status-booked { background: #0f766e; }
+    .status-paid { background: #166534; }
+    .status-cancelled { background: #991b1b; }
 
-.sidebar a {
-  color: white;
-  text-decoration: none;
-  padding: 10px;
-  border-radius: 8px;
-  background: #1e293b;
-}
+    .topbar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
 
-.sidebar a:hover {
-  background: #38bdf8;
-  color: black;
-}
+    .topbar button {
+      min-width: 120px;
+    }
 
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-  .activity-item{
-  background:#020826;
-  border:1px solid #1ea7ff;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-}
-
-.activity-item small{
-  opacity:0.7;
-}  
-
-@media(max-width:768px) {
-
-  .app-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 10px;
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    scrollbar-width: none;
-    backround: #07122b;
-  }
-
-  .sidebar::-webkit-scrollbar {
-    display: none;
-}
-
-  .sidebar h2 {
-    display: none;
-  }
-
-  .sidebar a,
-  .sidebar button {
-    flex-shrink: 0;
-    min-width: max-content;
-    margin: 0;
-  }
-  .summary {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.box {
-  min-height: 90px;
-}
-
-  .main-content {
-    padding: 15px;
-  }
-
-}
-    body {
-  font-size: 14px;
-}
-
-h1 {
-  font-size: 28px;
-  line-height: 1.1;
-}
-
-h2 {
-  font-size: 22px;
-}
-
-.card {
-  padding: 14px;
-  border-radius: 14px;
-}
-
-.box {
-  padding: 12px;
-}
-
-.sidebar {
-  margin-bottom: 15px;
-}
-
-.main-content {
-  padding: 12px;
-}
-    .badge {
-  background: #ef4444;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  margin-left: 6px;
-}
-    .affiliate-card {
-  background: #020617;
-  padding: 18px;
-  border-radius: 14px;
-  margin-bottom: 14px;
-  border: 1px solid #1ea7ff;
-}
-
-.affiliate-card h3 {
-  margin-top: 0;
-  color: #38bdf8;
-}
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
   </style>
 </head>
 
 <body>
-
-<div class="app-layout">
-
-  <div class="sidebar">
-
-    <h2>Divine Sleep</h2>
-
-    <a href="/business-dashboard.html">
-      Dashboard
-    </a>
-
-    <a href="/business-leads.html">
-  Leads
-  <span id="leadBadge" class="badge">0</span>
-</a>
-
-    <a href="/business-affiliates.html">Affiliates</a>
-
-    <a href="/business-analytics.html">Analytics</a>
-
-    <a href="#">
-      Settings
-    </a>
-
-    <button onclick="logout()">
-      Logout
-    </button>
-
-  </div>
-
-  <div class="main-content">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
   <h1>Business Owner Dashboard</h1>
+  <p id="businessName"></p>
 
-  <button onclick="logout()">
-    Logout
-  </button>
-</div>
-
-  <div class="card">
-    <h2 id="businessName">Business</h2> 
-
+  <div class="topbar">
+    <button onclick="refreshDashboard()">Refresh</button>
+    <button onclick="window.location.href='/business-leads.html'">Leads</button>
+    <button onclick="window.location.href='/business-affiliates.html'">Affiliates</button>
+    <button onclick="window.location.href='/business-analytics.html'">Analytics</button>
+    <button onclick="logout()">Logout</button>
   </div>
-    <div class="card quick-actions">
-  <h2>Quick Actions</h2>
-     <button onclick="refreshDashboard()">
-  🔄 Update Dashboard Now
-</button>
-
-  <button onclick="window.location.href='/business-leads.html'">
-  📋 View Leads
-</button>
-
-<button onclick="window.location.href='/business-affiliates.html'">
-  👥 View Affiliates
-</button>
-
-<button onclick="window.location.href='/business-analytics.html'">
-  📊 View Analytics
-</button>
-</div>
 
   <div class="card">
     <h2>Lead Summary</h2>
     <div class="summary">
-
-  <div class="box">
-    <span>📊 Total</span>
-    <strong id="totalLeads">0</strong>
+      <div class="box"><span>📊 Total</span><strong id="totalLeads">0</strong></div>
+      <div class="box"><span>🆕 New</span><strong id="newLeads">0</strong></div>
+      <div class="box"><span>📞 Contacted</span><strong id="contactedLeads">0</strong></div>
+      <div class="box"><span>📅 Booked</span><strong id="bookedLeads">0</strong></div>
+      <div class="box"><span>💵 Paid</span><strong id="paidLeads">0</strong></div>
+      <div class="box"><span>❌ Cancelled</span><strong id="cancelledLeads">0</strong></div>
+    </div>
   </div>
 
-  <div class="box">
-    <span>🆕 New</span>
-    <strong id="newLeads">0</strong>
+  <div class="card">
+    <h2>Leads <span id="leadBadge"></span></h2>
+    <input id="leadSearch" placeholder="Search by name, phone, or status" oninput="renderLeads()">
+    <div id="leadsContainer"></div>
   </div>
 
-  <div class="box">
-    <span>📞 Contacted</span>
-    <strong id="contactedLeads">0</strong>
-  </div>
-
-  <div class="box">
-    <span>📅 Booked</span>
-    <strong id="bookedLeads">0</strong>
-  </div>
-
-  <div class="box">
-    <span>💵 Paid</span>
-    <strong id="paidLeads">0</strong>
-  </div>
-
-  <div class="box">
-    <span>❌ Cancelled</span>
-    <strong id="cancelledLeads">0</strong>
-  </div>
-
-</div>
-    
-<div class="card">
-  <h2>Live Activity</h2>
-
-  <div id="activityFeed"></div>
-</div>
-    
   <div class="card">
     <h2>Affiliate Performance</h2>
-    <pre id="affiliatePerformance"></pre>
+    <div id="affiliatePerformance">Loading...</div>
   </div>
 
-  <script>
-    function playLeadSound() {
-  const audio = new Audio("/notification.mp3");
-  audio.play();
+  <div class="card">
+    <h2>Live Activity</h2>
+    <div id="activityFeed"></div>
+  </div>
 
-    const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
-    let previousLeadCount = 0;
-    let recentActivities = JSON.parse(localStorage.getItem("recent_activities") || "[]");
+<script>
+const BASE_URL = "https://dnm-backend-production-218c.up.railway.app";
 
-    const loggedUser =
-  JSON.parse(localStorage.getItem("logged_in_user") || "null");
+const loggedUser = JSON.parse(localStorage.getItem("logged_in_user") || "null");
+const isLoggedIn = localStorage.getItem("is_logged_in");
 
-const isLoggedIn =
-  localStorage.getItem("is_logged_in");
-
-if (!loggedUser || !isLoggedIn || loggedUser.role !== "business_owner") {
-      document.body.style.visibility = "visible";
-      window.location.href = "/login.html";
-    }
-
-    document.body.style.visibility = "visible";
-
-    async function loadBusinessDashboard() {
-      console.log("Dashboard loading");
+if (!loggedUser || !isLoggedIn || loggedUser.role !== "business") {
+  document.body.style.visibility = "visible";
+  document.body.innerHTML = "<h1>Access Denied</h1><p>Please login as business owner.</p>";
+  throw new Error("Business access required");
 }
-     
-    function playLeadSound() {
-  const audio = new Audio(
-    "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
-  );
 
-  audio.play().catch(() => {
-    console.log("Sound blocked until user interacts with page.");
+document.body.style.visibility = "visible";
+
+let allLeads = [];
+let recentActivities = JSON.parse(localStorage.getItem("recent_activities") || "[]");
+
+async function loadBusinessDashboard() {
+  const businessId = loggedUser.business_id;
+  document.getElementById("businessName").innerText = "Business ID: " + businessId;
+
+  const summaryRes = await fetch(BASE_URL + "/api/admin/lead-summary?business_id=" + businessId + "&t=" + Date.now());
+  const leadsRes = await fetch(BASE_URL + "/api/admin/leads?business_id=" + businessId + "&t=" + Date.now());
+
+  const summary = await summaryRes.json();
+  const leadsData = await leadsRes.json();
+
+  if (summary.ok) {
+    document.getElementById("totalLeads").innerText = summary.total ?? 0;
+    document.getElementById("newLeads").innerText = summary.new ?? 0;
+    document.getElementById("leadBadge").innerText = summary.new ?? 0;
+    document.getElementById("contactedLeads").innerText = summary.contacted ?? 0;
+    document.getElementById("bookedLeads").innerText = summary.booked ?? 0;
+    document.getElementById("paidLeads").innerText = summary.paid ?? 0;
+    document.getElementById("cancelledLeads").innerText = summary.cancelled ?? 0;
+  }
+
+  allLeads = leadsData.leads || [];
+  renderLeads();
+  document.getElementById("affiliatePerformance").innerHTML = "<p>Affiliate performance will load from admin data.</p>";
+}
+
+function renderLeads() {
+  const search = document.getElementById("leadSearch").value.toLowerCase();
+  const container = document.getElementById("leadsContainer");
+
+  let leads = allLeads.filter(lead => {
+    const text = `${lead.full_name || ""} ${lead.phone || ""} ${lead.status || ""}`.toLowerCase();
+    return text.includes(search);
   });
+
+  if (leads.length === 0) {
+    container.innerHTML = "<p>No matching leads found.</p>";
+    return;
+  }
+
+  container.innerHTML = leads.map(lead => `
+    <div class="lead-card">
+      <p><strong>ID:</strong> ${lead.id}</p>
+      <p><strong>Name:</strong> ${lead.full_name || ""}</p>
+      <p><strong>Phone:</strong> ${lead.phone || ""}</p>
+      <p><strong>Email:</strong> ${lead.email || ""}</p>
+      <p><strong>Notes:</strong> ${lead.notes || ""}</p>
+      <p><strong>Status:</strong> <span class="status-badge status-${lead.status}">${lead.status}</span></p>
+      <p><strong>Created:</strong> ${lead.created_at || ""}</p>
+
+      <select id="lead-status-${lead.id}">
+        <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+        <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+        <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+        <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+        <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+      </select>
+
+      <button onclick="updateLeadStatus(${lead.id})">Update Status</button>
+    </div>
+  `).join("");
 }
 
-    function showToast(message) {
+async function updateLeadStatus(leadId) {
+  const status = document.getElementById("lead-status-" + leadId).value;
 
-  const toast = document.createElement("div");
+  const res = await fetch(BASE_URL + "/api/admin/leads/" + leadId + "/status", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status })
+  });
 
-  toast.innerText = message;
+  const data = await res.json();
 
-  toast.style.position = "fixed";
-  toast.style.top = "20px";
-  toast.style.right = "20px";
-  toast.style.background = "#1e293b";
-  toast.style.color = "white";
-  toast.style.padding = "15px 20px";
-  toast.style.borderRadius = "12px";
-  toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
-  toast.style.zIndex = "9999";
-  toast.style.fontWeight = "bold";
-  toast.style.opacity = "0";
-  toast.style.transform = "translateY(-20px)";
-  toast.style.transition = "all 0.3s ease";
-
-  document.body.appendChild(toast);
-     setTimeout(() => {
-  toast.style.opacity = "1";
-  toast.style.transform = "translateY(0)";
-}, 50); 
-
-  setTimeout(() => {
-  toast.style.opacity = "0";
-  toast.style.transform = "translateY(-20px)";
-
-  setTimeout(() => {
-    toast.remove();
-  }, 300);
-}, 4000);
+  if (data.ok) {
+    addActivity("Lead " + leadId + " updated to " + status);
+    loadBusinessDashboard();
+  } else {
+    alert("Failed to update lead status");
+  }
 }
 
-    function addActivity(message) {
-
+function addActivity(message) {
   recentActivities.unshift({
     text: message,
     time: new Date().toLocaleTimeString()
   });
 
   recentActivities = recentActivities.slice(0, 10);
-  localStorage.setItem("recent_activities", JSON.stringify(recentActivities)); 
+  localStorage.setItem("recent_activities", JSON.stringify(recentActivities));
+  renderActivities();
+}
 
+function renderActivities() {
   const feed = document.getElementById("activityFeed");
 
+  if (recentActivities.length === 0) {
+    feed.innerHTML = "<p>No recent activity yet.</p>";
+    return;
+  }
+
   feed.innerHTML = recentActivities.map(activity => `
-    <div class="activity-item">
-      <div>${activity.text}</div>
+    <div class="lead-card">
+      <p>${activity.text}</p>
       <small>${activity.time}</small>
     </div>
   `).join("");
 }
-    
-function testNotification() {
-  playLeadSound();
-  showToast("🔥 Test notification working!");
-  if ("vibrate" in navigator) {
-  navigator.vibrate(300);
+
+function refreshDashboard() {
+  loadBusinessDashboard();
+  renderActivities();
 }
+
+function logout() {
+  localStorage.removeItem("logged_in_user");
+  localStorage.removeItem("affiliate_code");
+  localStorage.removeItem("is_logged_in");
+  localStorage.removeItem("user_role");
+  window.location.href = "/login.html";
 }
-    
-    loadBusinessDashboard();
+
+loadBusinessDashboard();
 renderActivities();
 
 setInterval(() => {
   loadBusinessDashboard();
   renderActivities();
 }, 5000);
-    
-function refreshDashboard() {
-  loadBusinessDashboard();
-  renderActivities();
-  showToast("🔄 Dashboard refreshed");
-}
-    
-function logout() {
+</script>
 
-  localStorage.removeItem("logged_in_user");
-  localStorage.removeItem("affiliate_code");
-  localStorage.removeItem("is_logged_in");
-  localStorage.removeItem("user_role");
-
-  window.location.href = "/login.html";
-} 
- </script> 
-</div> 
 </body>
 </html>
