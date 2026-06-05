@@ -101,6 +101,30 @@
   text-transform: uppercase;
 }
 
+    .table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #020617;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #1e293b;
+  white-space: nowrap;
+}
+
+th {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
 .status-new {
   background: #2563eb;
   color: white;
@@ -392,40 +416,43 @@ renderLeads(newLeads);
         return;
       }
 
-      container.innerHTML = filtered.map(lead => `
-        <div class="lead-card ${newLeads.some(n => n.id === lead.id) ? 'new-lead-highlight' : ''}">
-          <h3>${lead.full_name || "No name"}</h3>
-
-          <p><strong>Phone:</strong> ${lead.phone || ""}</p>
-          <p><strong>Email:</strong> ${lead.email || ""}</p>
-          <p><strong>Referral Code:</strong> ${lead.referral_code || ""}</p>
-          <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-          <p>
-  <strong>Status:</strong>
-
-  <span class="status-badge status-${lead.status}">
-    ${lead.status}
-  </span>
-</p>
-          <p><strong>Created:</strong> ${lead.created_at}</p>
-
-          <div class="actions">
-            <select id="status-${lead.id}">
-              <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
-              <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
-              <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
-              <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
-              <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
-            </select>
-
-            <button onclick="updateLeadStatus(${lead.id})">Update Status</button>
-
-            <a href="https://wa.me/27${(lead.phone || '').replace(/^0/, '').replace(/\\s/g, '')}" target="_blank">
-              <button>WhatsApp Guest</button>
-            </a>
-          </div>
-        </div>
-      `).join("");
+    container.innerHTML = `
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(lead => `
+          <tr class="${newLeads.some(n => n.id === lead.id) ? "new-lead-highlight" : ""}">
+            <td>${lead.id}</td>
+            <td>${lead.full_name || "No name"}</td>
+            <td>${lead.phone || ""}</td>
+            <td><span class="status-badge status-${lead.status}">${lead.status}</span></td>
+            <td>${lead.created_at || ""}</td>
+            <td>
+              <select id="status-${lead.id}">
+                <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+                <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+                <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+                <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+                <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+              </select>
+              <button onclick="updateLeadStatus(${lead.id})">Update</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  </div>
+`;  
     }
 
     function saveActivity(message) {
