@@ -394,7 +394,7 @@ drawStatusChart([
     const gap = 12;
     const y = 20 + index * (barHeight + gap);
 
-    const width = (item.value / maxValue) * 220;
+    const width = (item.value / maxValue) * 160;
 
     ctx.fillStyle = colors[index];
     ctx.fillRect(80, y, width, barHeight);
@@ -403,7 +403,7 @@ drawStatusChart([
     ctx.font = "14px Arial";
 
     ctx.fillText(item.label, 10, y + 18);
-    ctx.fillText(item.value, 90 + width, y + 18);
+    ctx.fillText(item.value, 85 + width, y + 18);
   });
    }   
 
