@@ -200,27 +200,66 @@ function renderLeads() {
     return;
   }
 
-  container.innerHTML = leads.map(lead => `
-    <div class="lead-card">
-      <p><strong>ID:</strong> ${lead.id}</p>
-      <p><strong>Name:</strong> ${lead.full_name || ""}</p>
-      <p><strong>Phone:</strong> ${lead.phone || ""}</p>
-      <p><strong>Email:</strong> ${lead.email || ""}</p>
-      <p><strong>Notes:</strong> ${lead.notes || ""}</p>
-      <p><strong>Status:</strong> <span class="status-badge status-${lead.status}">${lead.status}</span></p>
-      <p><strong>Created:</strong> ${lead.created_at || ""}</p>
+  container.innerHTML = `
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Created</th>
+<th>Action</th>
+<th>WhatsApp</th>
+</tr>
+</thead>
 
-      <select id="lead-status-${lead.id}">
-        <option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
-        <option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
-        <option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
-        <option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
-        <option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
-      </select>
+<tbody>
+${leads.map(lead => `
+<tr>
+<td>${lead.id}</td>
 
-      <button onclick="updateLeadStatus(${lead.id})">Update Status</button>
-    </div>
-  `).join("");
+<td>${lead.full_name || ""}</td>
+
+<td>${lead.phone || ""}</td>
+
+<td>
+<span class="status-badge status-${lead.status}">
+${lead.status}
+</span>
+</td>
+
+<td>
+${lead.created_at ? new Date(lead.created_at).toLocaleString() : ""}
+</td>
+
+<td>
+<select id="lead-status-${lead.id}">
+<option value="new" ${lead.status === "new" ? "selected" : ""}>new</option>
+<option value="contacted" ${lead.status === "contacted" ? "selected" : ""}>contacted</option>
+<option value="booked" ${lead.status === "booked" ? "selected" : ""}>booked</option>
+<option value="paid" ${lead.status === "paid" ? "selected" : ""}>paid</option>
+<option value="cancelled" ${lead.status === "cancelled" ? "selected" : ""}>cancelled</option>
+</select>
+
+<button onclick="updateLeadStatus(${lead.id})">
+Update
+</button>
+</td>
+
+<td>
+<a href="https://wa.me/27${(lead.phone || '').replace(/^0/, '').replace(/\s/g, '')}" target="_blank">
+<button>WhatsApp</button>
+</a>
+</td>
+
+</tr>
+`).join("")}
+</tbody>
+</table>
+</div>
+`;
 }
 
 async function updateLeadStatus(leadId) {
