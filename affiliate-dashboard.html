@@ -256,6 +256,25 @@ document.getElementById("affiliateInfo").innerText =
     document.getElementById("totalClicks").innerText = leadData.total_clicks ?? 0;
     document.getElementById("conversionRate").innerText = (leadData.conversion_rate ?? "0.00") + "%";
     renderChart(leadData);
+    const affiliateLeadsTable = document.getElementById("affiliateLeadsTable");
+
+if (affiliateLeadsTable) {
+  const leads = leadData.leads || [];
+
+  affiliateLeadsTable.innerHTML = leads.map(lead => `
+    <tr>
+      <td>${lead.id}</td>
+      <td>${lead.full_name || ""}</td>
+      <td>${lead.phone || ""}</td>
+      <td>
+        <span class="status-badge status-${lead.status}">
+          ${lead.status}
+        </span>
+      </td>
+      <td>${lead.created_at ? new Date(lead.created_at).toLocaleString() : ""}</td>
+    </tr>
+  `).join("");
+}
 
     document.getElementById("earningLeads").innerText =
       leadData.earning_leads ?? 0;
