@@ -225,6 +225,10 @@ h2 {
 
       <div class="card">
         <h2>Performance Chart</h2>
+        
+        <div class="chart-container">
+  <canvas id="statusChart"></canvas>
+</div>
 
         <p><strong>Clicks</strong></p>
         <div class="bar-wrap">
@@ -287,6 +291,22 @@ if (leadSummary.ok) {
   document.getElementById("bookedLeads").innerText = leadSummary.booked || 0;
   document.getElementById("paidLeads").innerText = leadSummary.paid || 0;
   document.getElementById("cancelledLeads").innerText = leadSummary.cancelled || 0;
+  const maxStatus = Math.max(
+  leadSummary.new || 0,
+  leadSummary.contacted || 0,
+  leadSummary.booked || 0,
+  leadSummary.paid || 0,
+  leadSummary.cancelled || 0,
+  1
+);
+
+drawStatusChart([
+  { label: "New", value: leadSummary.new || 0 },
+  { label: "Contacted", value: leadSummary.contacted || 0 },
+  { label: "Booked", value: leadSummary.booked || 0 },
+  { label: "Paid", value: leadSummary.paid || 0 },
+  { label: "Cancelled", value: leadSummary.cancelled || 0 }
+], maxStatus);
 }
 
       const totalLeads = affiliates.reduce((sum, a) => sum + Number(a.total_leads || 0), 0);
@@ -348,6 +368,43 @@ if (leadSummary.ok) {
         </div>
       `).join("");
     }
+
+    function drawStatusChart(data, maxValue) {
+  const canvas = document.getElementById("statusChart");
+
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = 320;
+  canvas.height = 220;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const colors = [
+    "#38bdf8",
+    "#22c55e",
+    "#facc15",
+    "#a855f7",
+    "#ef4444"
+  ];
+
+  data.forEach((item, index) => {
+    const barHeight = 28;
+    const gap = 12;
+    const y = 20 + index * (barHeight + gap);
+
+    const width = (item.value / maxValue) * 220;
+
+    ctx.fillStyle = colors[index];
+    ctx.fillRect(80, y, width, barHeight);
+
+    ctx.fillStyle = "white";
+    ctx.font = "14px Arial";
+
+    ctx.fillText(item.label, 10, y + 18);
+    ctx.fillText(item.value, 90 + width, y + 18);
+  });
 
     function logout() {
       localStorage.removeItem("logged_in_user");
