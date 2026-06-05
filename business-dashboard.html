@@ -174,7 +174,7 @@ async function loadBusinessDashboard() {
   if (summary.ok) {
     document.getElementById("totalLeads").innerText = summary.total ?? 0;
     document.getElementById("newLeads").innerText = summary.new ?? 0;
-    document.getElementById("leadBadge").innerText = summary.new ?? 0;
+    document.getElementById("leadBadge").innerText = summary.total ?? 0;
     document.getElementById("contactedLeads").innerText = summary.contacted ?? 0;
     document.getElementById("bookedLeads").innerText = summary.booked ?? 0;
     document.getElementById("paidLeads").innerText = summary.paid ?? 0;
